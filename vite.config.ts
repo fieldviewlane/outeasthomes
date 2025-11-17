@@ -4,8 +4,8 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // For GitHub Pages - remove this line (or set to "/") for Netlify/Vercel
-  base: "/outeasthomes/",
+  // Base path is configurable for different deploy targets (prod, dev preview, local)
+  base: process.env.VITE_BASE_PATH || "/",
   server: {
     host: "::",
     port: 8080,
