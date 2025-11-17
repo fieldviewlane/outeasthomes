@@ -1,0 +1,98 @@
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import livingRoom from "@/assets/living-room.jpg";
+import kitchen from "@/assets/kitchen.jpg";
+import bedroom from "@/assets/bedroom.jpg";
+import bathroom from "@/assets/bathroom.jpg";
+import exterior from "@/assets/exterior.jpg";
+
+const images = [
+  { src: livingRoom, title: "Spacious Living Room", description: "Floor-to-ceiling windows with stunning views" },
+  { src: kitchen, title: "Gourmet Kitchen", description: "Premium appliances and marble countertops" },
+  { src: bedroom, title: "Master Bedroom", description: "Your private sanctuary of comfort" },
+  { src: bathroom, title: "Luxury Bathroom", description: "Spa-like experience at home" },
+  { src: exterior, title: "Modern Architecture", description: "Contemporary design meets elegance" },
+];
+
+export const HorizontalCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prevSlide();
+      if (e.key === "ArrowRight") nextSlide();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  return (
+    <section className="relative h-screen w-full overflow-hidden">
+      <div
+        className="flex h-full transition-transform duration-700 ease-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {images.map((image, index) => (
+          <div key={index} className="relative min-w-full h-full">
+            <img
+              src={image.src}
+              alt={image.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-24 left-8 md:left-16 max-w-2xl animate-fade-in">
+              <h2 className="font-serif text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
+                {image.title}
+              </h2>
+              <p className="text-lg md:text-xl text-primary-foreground/90">
+                {image.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <Button
+        variant="outline"
+        size="icon"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background/90 border-border/50"
+        onClick={prevSlide}
+        aria-label="Previous image"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </Button>
+
+      <Button
+        variant="outline"
+        size="icon"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background/90 border-border/50"
+        onClick={nextSlide}
+        aria-label="Next image"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </Button>
+
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentIndex(index)}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === currentIndex ? "w-8 bg-accent" : "w-2 bg-primary-foreground/50"
+            }`}
+            aria-label={`Go to image ${index + 1}`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+};
