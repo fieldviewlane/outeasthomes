@@ -8,6 +8,8 @@ on:
 
 jobs:
   deploy-prod:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
@@ -39,6 +41,8 @@ jobs:
           clean: true
 
   deploy-dev:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/dev'
 
