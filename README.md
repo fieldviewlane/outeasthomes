@@ -55,3 +55,17 @@ This project is built with:
 - Responsive design
 - Contact form with validation
 - Modern, clean UI with smooth animations
+
+## Updating Carousel Images & Captions
+
+The hero carousel is implemented in `src/components/HorizontalCarousel.tsx`.
+
+To change the images and the text over each image:
+
+1. **Update or add images** in `src/assets/` (e.g. replace `living-room.jpg`, `kitchen.jpg`, etc. or add new files).
+2. **Edit the `images` array** at the top of `src/components/HorizontalCarousel.tsx`:
+   - `src`: import for the image file (from `@/assets/...`).
+   - `title`: large heading rendered over the image.
+   - `description`: smaller supporting text rendered under the title.
+3. To **add or remove slides**, add or remove objects in the `images` array. The carousel and dots navigation will automatically adjust to the new length.
+4. If you rename any image files, make sure the imports at the top of `HorizontalCarousel.tsx` match the new filenames.
