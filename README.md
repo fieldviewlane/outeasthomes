@@ -56,6 +56,22 @@ This project is built with:
 - Contact form with validation
 - Modern, clean UI with smooth animations
 
+## Updating the Property Variable Store
+
+Key display and contact details are centralized in `src/config/property.ts` via the `PROPERTY_CONFIG` object. This acts as the main variable store for the site.
+
+You can edit:
+
+- `address`, `headline`, `bedrooms`, `bathrooms`, `squareFeet`
+- `baseRentPerPeriod`
+- `rentPeriods`: the list of seasonal rental periods shown in the rates table and dropdowns
+- `defaultPeriodId`: which period is selected by default
+- `contactEmail`: the obfuscated contact email used when the interest form is submitted
+
+> Note: `contactEmail` is assembled from `CONTACT_EMAIL_USER` and `CONTACT_EMAIL_DOMAIN` constants so the full address does not appear directly in the source.
+
+After changing these values, the home details, bottom bar, rental rates table, and interest form will all update automatically.
+
 ## Updating Carousel Images & Captions
 
 The hero carousel is implemented in `src/components/HorizontalCarousel.tsx`.

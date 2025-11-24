@@ -13,24 +13,32 @@ export type PropertyConfig = {
   bedrooms: number;
   bathrooms: number;
   squareFeet: number;
-  baseRentPerPeriod: number;
+  acreage: number;
+  min2town: number;
   rentPeriods: RentPeriod[];
   defaultPeriodId: RentPeriodId;
+  /** Obfuscated contact email, assembled at runtime so it isn't plainly visible in the code. */
+  contactEmail: string;
 };
 
+const CONTACT_EMAIL_USER = "hello";
+const CONTACT_EMAIL_DOMAIN = "fieldviewlane.com";
+
 export const PROPERTY_CONFIG: PropertyConfig = {
-  address: "123 Luxury Lane, Premium District, City",
-  headline: "Your Dream Home Awaits",
-  bedrooms: 4,
-  bathrooms: 3.5,
-  squareFeet: 3500,
-  baseRentPerPeriod: 4500,
+  address: "Fieldview Lane, East Hampton Village Fringe",
+  headline: "East Hampton Retreat Close to Everything",
+  bedrooms: 6,
+  bathrooms: 4.5,
+  squareFeet: 4000,
+  acreage: 1,
+  min2town: 3,
+  contactEmail: `${CONTACT_EMAIL_USER}@${CONTACT_EMAIL_DOMAIN}`,
   rentPeriods: [
     {
       id: "july",
       label: "July",
       description: "Full month of July",
-      amount: 90000,
+      amount: 85000,
     },
     {
       id: "august",
@@ -42,7 +50,7 @@ export const PROPERTY_CONFIG: PropertyConfig = {
       id: "md_to_ld",
       label: "Memorial Day-Labor Day",
       description: "Seasonal stay",
-      amount: 250000,
+      amount: 220000,
     },
   ],
   defaultPeriodId: "august",

@@ -50,10 +50,10 @@ export const HorizontalCarousel = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <div className="absolute bottom-24 left-8 md:left-16 max-w-2xl animate-fade-in">
-              <h2 className="font-serif text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl font-bold text-primary-foreground mb-2 sm:mb-3 md:mb-4">
                 {image.title}
               </h2>
-              <p className="text-lg md:text-xl text-primary-foreground/90">
+              <p className="text-base sm:text-lg md:text-xl text-primary-foreground/90">
                 {image.description}
               </p>
             </div>
