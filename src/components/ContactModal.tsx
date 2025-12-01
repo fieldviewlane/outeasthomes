@@ -51,6 +51,9 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const encodeFormData = (data: Record<string, string>) =>
+  new URLSearchParams(data).toString();
+
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -79,20 +82,25 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
     );
 
     try {
-      await fetch("/.netlify/functions/send-interest-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          phone: values.phone,
-          message: values.message,
-          periodId: values.periodId,
-          periodLabel: selectedPeriod?.label,
-          // Use obfuscated contact email from the central config; never exposed in the UI
-          to: PROPERTY_CONFIG.contactEmail,
-        }),
+      const body = encodeFormData({
+        "form-name": "interest",
+        name: values.name,
+        email: values.email,
+        phone: values.phone ?? "",
+        message: values.message,
+        periodId: values.periodId,
+        periodLabel: selectedPeriod?.label ?? "",
       });
+
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Form submission failed with status ${response.status}`);
+      }
 
       toast.success("Thank you for your interest!", {
         description: "We've received your details and will be in touch soon.",
@@ -101,7 +109,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       console.error("Failed to submit interest form", error);
       toast.error("Something went wrong while submitting your request.");
     }
-    
+
     form.reset();
     setIsSubmitting(false);
     onClose();

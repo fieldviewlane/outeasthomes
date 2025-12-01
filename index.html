@@ -20,6 +20,17 @@
 
   <body>
     <div id="root"></div>
+
+    <!-- Hidden Netlify form to register the SPA interest form -->
+    <form name="interest" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="phone" />
+      <textarea name="message"></textarea>
+      <input type="text" name="periodId" />
+      <input type="text" name="periodLabel" />
+    </form>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

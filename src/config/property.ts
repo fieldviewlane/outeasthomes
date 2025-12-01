@@ -22,7 +22,7 @@ export type PropertyConfig = {
 };
 
 const CONTACT_EMAIL_USER = "hello";
-const CONTACT_EMAIL_DOMAIN = "@outeasthomes.com";
+const CONTACT_EMAIL_DOMAIN = "outeasthomes.com";
 
 export const PROPERTY_CONFIG: PropertyConfig = {
   address: "Fieldview Lane, East Hampton Village Fringe",

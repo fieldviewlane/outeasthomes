@@ -47,7 +47,7 @@ export const BottomBar = () => {
   return (
     <>
       <aside className="fixed bottom-0 left-0 right-0 bg-primary/95 backdrop-blur-md border-t border-border z-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-12 py-1 sm:py-2 md:py-3 flex items-center justify-center md:justify-between gap-2 sm:gap-4 md:gap-6">
+        <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 md:px-12 flex items-center justify-center md:justify-between gap-2 sm:gap-4 md:gap-6 h-14 sm:h-16 md:h-20">
           <div className="hidden md:flex items-center gap-3">
             <span
               className="inline-block text-right font-serif text-xl sm:text-2xl md:text-3xl font-bold text-primary-foreground"
