@@ -29,8 +29,8 @@ jobs:
       - name: Build (prod)
         run: npm run build
         env:
-          VITE_BASE_PATH: "/outeasthomes/"
-          VITE_BASENAME: "/outeasthomes"
+          VITE_BASE_PATH: "/"
+          VITE_BASENAME: "/"
           VITE_ROBOTS: "index,follow"
 
       - name: Deploy to gh-pages (prod)
