@@ -3,13 +3,13 @@ import { PROPERTY_CONFIG } from "@/config/property";
 
 const amenities = [
   "Gourmet Kitchen with Premium Appliances",
-  "Beautifully Landscaped Backyard which Backs Up to a Farm",
-  "First Floor Primary Bedroom",
-  "Private Backyard with Pool & Upstairs Balcony",
-  "Two-Car Garage",
-  "Downstairs Kitchenette & 85\" TV",
+  "Beautifully Landscaped, Private Yard Backing to Peaceful Farm",
+  "First-Floor Primary Suite",
+  "Heated Pool and Upper-Level Balcony Deck",
+  "Two-Car Garage with Tesla Charger",
   "Gym with Peloton Bike",
   "Hardwood Floors",
+  "Full Lower Guest Level with Kitchenette and 85” TV",
 ];
 
 const formatCurrency = (amount: number) =>
@@ -73,16 +73,21 @@ export const PropertyDetails = () => {
         </section>
 
         <section className="mb-12 sm:mb-16 md:mb-20">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">About This Property</h2>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">About Finca Hamptones</h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
-            Welcome to this stunning contemporary home that seamlessly blends modern luxury with comfortable living. 
-            Designed for those who appreciate refined aesthetics and premium quality, this residence offers an 
-            unparalleled lifestyle experience.
+            Welcome to a bright and inviting Hamptons summer home that blends updated living with relaxed beach vibes. Set on a beautifully landscaped acre that backs onto a quiet farm, the property offers rare privacy while remaining just 3 minutes from the heart of East Hampton Village.
+          </p>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
+            The main level features an open, airy layout ideal for summer living. A renovated gourmet kitchen with premium appliances anchors the space, complemented by a first-floor primary suite designed for ease and convenience. Upstairs, additional guest bedrooms provide plenty of room for the entire family. The lower level serves as its own welcoming guest area, complete with a kitchenette, bedrooms, full bath, and a media den—ideal for visitors or a nanny.
+          </p>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
+            Outdoors, the expansive backyard is a true highlight: lush plantings, a generous lawn, and a heated, gated pool create a peaceful retreat for long summer days. The adjacent deck offers electronic awnings, a BBQ, outdoor dining and lounge areas, and an outdoor shower—perfect for effortless indoor–outdoor living.
+          </p>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
+            A two-car garage with Tesla charger, home gym with Peloton, hardwood floors, and a whole-house generator add practical luxury to this exceptional seasonal escape.
           </p>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Every detail has been carefully curated to provide the ultimate in comfort and sophistication. From the 
-            gourmet kitchen perfect for entertaining to the serene master suite, this home is a true sanctuary in 
-            the heart of the city's most desirable neighborhood.
+            A fresh, private, and perfectly located Hamptons home—crafted for effortless summer enjoyment.
           </p>
         </section>
 

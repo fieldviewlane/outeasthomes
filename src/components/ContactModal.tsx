@@ -118,7 +118,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         <DialogHeader>
           <DialogTitle className="font-serif text-3xl">Express Your Interest</DialogTitle>
           <DialogDescription>
-            Please fill out the form below and we will respond as soon as possible.
+            Please fill out the form below. We will respond as soon as possible.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -186,7 +186,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                         onChange={(event) => field.onChange(event.target.value)}
                       >
                         <option value="" disabled>
-                          Please click here & select which period you're interested in
+                          Please click to select rental period of interest
                         </option>
                         {PROPERTY_CONFIG.rentPeriods.map((period) => (
                           <option key={period.id} value={period.id}>
