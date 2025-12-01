@@ -8,11 +8,11 @@ import backyard from "@/assets/backyard.jpg";
 import exterior from "@/assets/exterior.jpg";
 
 const images = [
+  { src: exterior, title: "Finca Hamptones", description: "A Welcoming Home 3 Minutes from East Hampton Village" },
   { src: livingRoom, title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
   { src: kitchen, title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
   { src: backyard, title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
   { src: bedroom, title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
-  { src: exterior, title: "A Welcoming Home", description: "3 Minutes from East Hampton Village" },
 ];
 
 export const HorizontalCarousel = () => {
