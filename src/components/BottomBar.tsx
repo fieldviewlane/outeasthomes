@@ -87,9 +87,9 @@ export const BottomBar = () => {
           </div>
 
           <Button
-             size="lg"
-            className="w-3/4 sm:w-1/2 md:w-auto md:flex-shrink-0 bg-accent hover:bg-accent/90 font-semibold text-sm sm:text-base md:text-lg px-3 sm:px-4 md:px-6 py-1 sm:py-2 md:py-2 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-             onClick={() => setIsModalOpen(true)}
+            size="lg"
+            className="w-3/4 sm:w-1/2 md:w-auto md:flex-shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-sm sm:text-base md:text-lg px-3 sm:px-4 md:px-6 py-1 sm:py-2 md:py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            onClick={() => setIsModalOpen(true)}
           >
             Express Interest
           </Button>
