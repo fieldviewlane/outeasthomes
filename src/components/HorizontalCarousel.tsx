@@ -4,15 +4,15 @@ import { Button } from "@/components/ui/button";
 import livingRoom from "@/assets/living-room.jpg";
 import kitchen from "@/assets/kitchen.jpg";
 import bedroom from "@/assets/bedroom.jpg";
-import bathroom from "@/assets/bathroom.jpg";
+import backyard from "@/assets/backyard.jpg";
 import exterior from "@/assets/exterior.jpg";
 
 const images = [
-  { src: livingRoom, title: "Spacious Living Room", description: "Floor-to-ceiling windows with stunning views" },
-  { src: kitchen, title: "Gourmet Kitchen", description: "Premium appliances and marble countertops" },
-  { src: bedroom, title: "Master Bedroom", description: "Your private sanctuary of comfort" },
-  { src: bathroom, title: "Luxury Bathroom", description: "Spa-like experience at home" },
-  { src: exterior, title: "Modern Architecture", description: "Contemporary design meets elegance" },
+  { src: livingRoom, title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
+  { src: kitchen, title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
+  { src: backyard, title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
+  { src: bedroom, title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
+  { src: exterior, title: "A Welcoming Home", description: "3 Minutes from East Hampton Village" },
 ];
 
 export const HorizontalCarousel = () => {
@@ -50,10 +50,10 @@ export const HorizontalCarousel = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <div className="absolute bottom-24 left-8 md:left-16 max-w-2xl animate-fade-in">
-              <h2 className="font-serif text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl font-bold text-primary-foreground mb-2 sm:mb-3 md:mb-4">
                 {image.title}
               </h2>
-              <p className="text-lg md:text-xl text-primary-foreground/90">
+              <p className="text-base sm:text-lg md:text-xl text-primary-foreground/90">
                 {image.description}
               </p>
             </div>

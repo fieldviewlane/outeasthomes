@@ -21,7 +21,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Mail, Phone, User } from "lucide-react";
+import { Mail, Phone, User, Calendar } from "lucide-react";
+import { PROPERTY_CONFIG } from "@/config/property";
+
+const periodIds = ["july", "august", "md_to_ld"] as const;
 
 const formSchema = z.object({
   name: z.string()
@@ -32,14 +35,18 @@ const formSchema = z.object({
     .trim()
     .email({ message: "Please enter a valid email address" })
     .max(255, { message: "Email must be less than 255 characters" }),
-  phone: z.string()
+  phone: z
+    .string()
     .trim()
-    .min(10, { message: "Please enter a valid phone number" })
-    .max(20, { message: "Phone number is too long" }),
+    .max(16, { message: "Phone number is too long" })
+    .optional(),
   message: z.string()
     .trim()
-    .min(10, { message: "Message must be at least 10 characters" })
+    .min(50, { message: "Message must be at least 50 characters" })
     .max(1000, { message: "Message must be less than 1000 characters" }),
+  periodId: z.enum(periodIds, {
+    errorMap: () => ({ message: "Please select a rental period" }),
+  }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -59,18 +66,41 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       email: "",
       phone: "",
       message: "",
+      periodId: undefined,
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    toast.success("Thank you for your interest!", {
-      description: "We'll contact you shortly to schedule a viewing.",
-    });
+
+    // Resolve the selected period label from the main property config
+    const selectedPeriod = PROPERTY_CONFIG.rentPeriods.find(
+      (p) => p.id === values.periodId
+    );
+
+    try {
+      await fetch("/.netlify/functions/send-interest-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          message: values.message,
+          periodId: values.periodId,
+          periodLabel: selectedPeriod?.label,
+          // Use obfuscated contact email from the central config; never exposed in the UI
+          to: PROPERTY_CONFIG.contactEmail,
+        }),
+      });
+
+      toast.success("Thank you for your interest!", {
+        description: "We've received your details and will be in touch soon.",
+      });
+    } catch (error) {
+      console.error("Failed to submit interest form", error);
+      toast.error("Something went wrong while submitting your request.");
+    }
     
     form.reset();
     setIsSubmitting(false);
@@ -78,12 +108,17 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-serif text-3xl">Express Your Interest</DialogTitle>
           <DialogDescription>
-            Fill out the form below and we'll get back to you within 24 hours to schedule a viewing.
+            Please fill out the form below. We will respond as soon as possible.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -97,7 +132,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                   <FormControl>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input placeholder="John Doe" className="pl-10" {...field} />
+                      <Input placeholder="Alexis Baldwin" className="pl-10" {...field} />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -113,7 +148,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                   <FormControl>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input type="email" placeholder="john@example.com" className="pl-10" {...field} />
+                      <Input type="email" placeholder="alexis@example.com" className="pl-10" {...field} />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -125,11 +160,11 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>Phone Number (optional)</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input type="tel" placeholder="(555) 123-4567" className="pl-10" {...field} />
+                      <Input type="tel" placeholder="(212) 555-1212" className="pl-10" {...field} />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -138,13 +173,43 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
             />
             <FormField
               control={form.control}
+              name="periodId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Rental Period</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                      <select
+                        className="w-full appearance-none rounded-md border border-input bg-background py-2 pl-10 pr-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        value={field.value ?? ""}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      >
+                        <option value="" disabled>
+                          Please click to select rental period of interest
+                        </option>
+                        {PROPERTY_CONFIG.rentPeriods.map((period) => (
+                          <option key={period.id} value={period.id}>
+                            {period.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="message"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Message</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Tell us about your move-in timeline, any questions, or special requirements..."
+                      <Textarea
+                      placeholder="Please tell us about yourselves and list any questions you might have"
                       className="min-h-[100px] resize-none"
                       {...field}
                     />
