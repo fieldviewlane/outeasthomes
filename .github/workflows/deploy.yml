@@ -39,6 +39,7 @@ jobs:
           branch: gh-pages
           folder: dist
           clean: true
+          cname: outeasthomes.com
 
   deploy-dev:
     permissions:
