@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import pool from "@/assets/pool.jpg";
 import livingRoom from "@/assets/living-room.jpg";
 import kitchen from "@/assets/kitchen.jpg";
 import bedroom from "@/assets/bedroom.jpg";
 import backyard from "@/assets/backyard.jpg";
 import exterior from "@/assets/exterior.jpg";
 
+
 const images = [
-  { src: exterior, title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
+  { src: pool, title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
   { src: livingRoom, title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
   { src: kitchen, title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
   { src: backyard, title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
   { src: bedroom, title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
+  { src: exterior, title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
 ];
 
 export const HorizontalCarousel = () => {
