@@ -73,6 +73,18 @@ export const PropertyDetails = () => {
         </section>
 
         <section className="mb-12 sm:mb-16 md:mb-20">
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8">Premium Amenities</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            {amenities.map((amenity, index) => (
+               <div key={index} className="flex items-center gap-3 group">
+                 <Home className="h-5 w-5 text-accent flex-shrink-0 transition-transform" aria-hidden="true" />
+                 <span className="text-base sm:text-lg text-foreground">{amenity}</span>
+               </div>
+             ))}
+          </div>
+        </section>
+
+        <section className="mb-12 sm:mb-16 md:mb-20">
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">About Finca Hamptones</h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
             Welcome to a bright and inviting Hamptons summer home that blends updated living with relaxed beach vibes. Set on a beautifully landscaped acre that backs onto a quiet farm, the property offers rare privacy while remaining just 3 minutes from the heart of East Hampton Village.
@@ -89,18 +101,6 @@ export const PropertyDetails = () => {
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
             A fresh, private, and perfectly located Hamptons home—crafted for effortless summer enjoyment.
           </p>
-        </section>
-
-        <section className="mb-12 sm:mb-16 md:mb-20">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8">Premium Amenities</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {amenities.map((amenity, index) => (
-               <div key={index} className="flex items-center gap-3 group">
-                 <Home className="h-5 w-5 text-accent flex-shrink-0 transition-transform" aria-hidden="true" />
-                 <span className="text-base sm:text-lg text-foreground">{amenity}</span>
-               </div>
-             ))}
-          </div>
         </section>
 
         <section className="mb-12 sm:mb-16 md:mb-20">
