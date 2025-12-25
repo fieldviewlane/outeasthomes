@@ -35,9 +35,10 @@ npm run preview
 ### Branch & deploy workflow
 
 - Work on the `dev` branch for changes.
-- When youre happy, merge `dev` into `main`.
-- A GitHub Action automatically builds `main` and deploys to the `gh-pages` branch.
-- The live site is served from GitHub Pages at `https://fieldviewlane.github.io/outeasthomes/`.
+- When you're happy, merge `dev` into `main`.
+- Netlify is connected directly to the GitHub repo and automatically builds and deploys the `main` branch to a production site (including Netlify Forms handling).
+- A GitHub Action also builds `main` and `dev` and deploys the static assets to the `gh-pages` branch for GitHub Pages, which can be used as a secondary host and for preview environments.
+- The GitHub Pages site is available at `https://fieldviewlane.github.io/outeasthomes/`.
 
 ## Technologies
 

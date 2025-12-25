@@ -105,6 +105,13 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       toast.success("Thank you for your interest!", {
         description: "We've received your details and will be in touch soon.",
       });
+
+      // Google Ads conversion tracking for Express Interest form submissions
+      if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+        (window as any).gtag("event", "conversion", {
+          send_to: "AW-17829976959/JtVACMi1gtcbEP-2_7VC",
+        });
+      }
     } catch (error) {
       console.error("Failed to submit interest form", error);
       toast.error("Something went wrong while submitting your request.");
