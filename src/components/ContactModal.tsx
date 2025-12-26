@@ -41,7 +41,8 @@ const formSchema = z.object({
     .max(16, { message: "Phone number is too long" })
     .optional(),
   message: z.string()
-    .trim(),
+    .trim()
+    .optional(),
   periodId: z.enum(periodIds, {
     errorMap: () => ({ message: "Please select a rental period" }),
   }),
@@ -85,7 +86,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         name: values.name,
         email: values.email,
         phone: values.phone ?? "",
-        message: values.message,
+        message: values.message ?? "",
         periodId: values.periodId,
         periodLabel: selectedPeriod?.label ?? "",
       });
@@ -224,7 +225,8 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                       <Textarea
                       placeholder="Please tell us about yourselves and list any questions you might have"
                       className="min-h-[100px] resize-none"
-                      {...field}
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
