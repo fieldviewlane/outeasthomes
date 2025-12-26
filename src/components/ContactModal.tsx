@@ -41,9 +41,7 @@ const formSchema = z.object({
     .max(16, { message: "Phone number is too long" })
     .optional(),
   message: z.string()
-    .trim()
-    .min(50, { message: "Message must be at least 50 characters" })
-    .max(1000, { message: "Message must be less than 1000 characters" }),
+    .trim(),
   periodId: z.enum(periodIds, {
     errorMap: () => ({ message: "Please select a rental period" }),
   }),
