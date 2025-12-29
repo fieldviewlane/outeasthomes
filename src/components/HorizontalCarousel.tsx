@@ -9,23 +9,44 @@ import backyard from "@/assets/backyard.jpg";
 import exterior from "@/assets/exterior.jpg";
 
 
-const images = [
-  { src: pool, title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
-  { src: livingRoom, title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
-  { src: kitchen, title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
-  { src: backyard, title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
-  { src: bedroom, title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
-  { src: exterior, title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
+type ImageConfig = {
+  id: string;
+  src: string;
+  title: string;
+  description: string;
+};
+
+const images: ImageConfig[] = [
+  { id: "pool", src: pool, title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
+  { id: "living-room", src: livingRoom, title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
+  { id: "kitchen", src: kitchen, title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
+  { id: "backyard", src: backyard, title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
+  { id: "bedroom", src: bedroom, title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
+  { id: "exterior", src: exterior, title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
 ];
 
+const getInitialIndex = () => {
+  if (typeof window === "undefined") return 0;
+  const hash = window.location.hash.replace("#", "");
+  const index = images.findIndex((image) => image.id === hash);
+  return index !== -1 ? index : 0;
+};
+
 export const HorizontalCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(getInitialIndex);
+  const [isPaused, setIsPaused] = useState(false);
+  // Only sync the URL hash if there was one on load or the user later changes it.
+  const [syncHash, setSyncHash] = useState<boolean>(
+    typeof window !== "undefined" && window.location.hash.length > 0,
+  );
 
   const nextSlide = () => {
+    setIsPaused(true);
     setCurrentIndex((prev) => (prev + 1) % images.length);
   };
 
   const prevSlide = () => {
+    setIsPaused(true);
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
@@ -38,6 +59,51 @@ export const HorizontalCarousel = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (isPaused) return;
+
+    const interval = window.setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+
+    return () => window.clearInterval(interval);
+  }, [isPaused]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "");
+      const index = images.findIndex((image) => image.id === hash);
+      if (index !== -1) {
+        setIsPaused(true);
+        setCurrentIndex(index);
+        setSyncHash(true);
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // If there was no hash on initial load and the user hasn't used a hash,
+    // don't modify the URL when just visiting outeasthomes.com.
+    if (!syncHash) return;
+
+    const image = images[currentIndex];
+    if (!image) return;
+
+    const newHash = `#${image.id}`;
+    if (window.location.hash !== newHash) {
+      window.history.replaceState(null, "", newHash);
+    }
+  }, [currentIndex, syncHash]);
+
   return (
     <section className="relative h-screen w-full overflow-hidden">
       <div
@@ -45,7 +111,7 @@ export const HorizontalCarousel = () => {
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((image, index) => (
-          <div key={index} className="relative min-w-full h-full">
+          <div key={index} id={image.id} className="relative min-w-full h-full">
             <img
               src={image.src}
               alt={image.title}
@@ -88,7 +154,10 @@ export const HorizontalCarousel = () => {
         {images.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => {
+              setIsPaused(true);
+              setCurrentIndex(index);
+            }}
             className={`h-2 rounded-full transition-all duration-300 ${
               index === currentIndex ? "w-8 bg-accent" : "w-2 bg-primary-foreground/50"
             }`}
