@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
+import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
 import { Button } from "@/components/ui/button";
-import poolLarge from "@/assets/pool-large.avif";
-import poolMedium from "@/assets/pool-medium.avif";
-import poolSmall from "@/assets/pool-small.avif";
+
+// Static assets from public folder for LCP optimization
+const poolLarge = "/assets/pool-large.avif";
+const poolMedium = "/assets/pool-medium.avif";
+const poolSmall = "/assets/pool-small.avif";
+
 import livingRoomLarge from "@/assets/living-room-large.avif";
 import livingRoomMedium from "@/assets/living-room-medium.avif";
 import livingRoomSmall from "@/assets/living-room-small.avif";
