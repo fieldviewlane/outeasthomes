@@ -69,7 +69,7 @@ export const HorizontalCarousel = () => {
     }, 3000);
 
     return () => window.clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, currentIndex]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -118,7 +118,7 @@ export const HorizontalCarousel = () => {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-24 left-8 md:left-16 max-w-2xl animate-fade-in">
+            <div className="absolute bottom-24 left-8 right-8 md:left-16 md:right-16 max-w-2xl animate-fade-in">
               <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl font-bold text-primary-foreground mb-2 sm:mb-3 md:mb-4">
                 {image.title}
               </h2>

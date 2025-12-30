@@ -105,8 +105,9 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       });
 
       // Google Ads conversion tracking for Express Interest form submissions
-      if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-        (window as any).gtag("event", "conversion", {
+      const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+      if (typeof gtag === "function") {
+        gtag("event", "conversion", {
           send_to: "AW-17829976959/JtVACMi1gtcbEP-2_7VC",
         });
       }
