@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import pool from "@/assets/pool.jpg";
-import livingRoom from "@/assets/living-room.jpg";
-import kitchen from "@/assets/kitchen.jpg";
-import bedroom from "@/assets/bedroom.jpg";
-import backyard from "@/assets/backyard.jpg";
-import exterior from "@/assets/exterior.jpg";
+import pool from "@/assets/pool.avif";
+import livingRoom from "@/assets/living-room.avif";
+import kitchen from "@/assets/kitchen.avif";
+import bedroom from "@/assets/bedroom.avif";
+import backyard from "@/assets/backyard.avif";
+import exterior from "@/assets/exterior.avif";
 
 
 type ImageConfig = {
