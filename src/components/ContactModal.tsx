@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Mail, Phone, User, Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { PROPERTY_CONFIG } from "@/config/property";
 
 const periodIds = ["july", "august", "md_to_ld"] as const;
@@ -43,9 +44,7 @@ const formSchema = z.object({
   message: z.string()
     .trim()
     .optional(),
-  periodId: z.enum(periodIds, {
-    errorMap: () => ({ message: "Please select a rental period" }),
-  }),
+  periodId: z.enum(periodIds).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -106,8 +105,9 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       });
 
       // Google Ads conversion tracking for Express Interest form submissions
-      if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-        (window as any).gtag("event", "conversion", {
+      const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+      if (typeof gtag === "function") {
+        gtag("event", "conversion", {
           send_to: "AW-17829976959/JtVACMi1gtcbEP-2_7VC",
         });
       }
@@ -128,25 +128,31 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         if (!open) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[500px] flex flex-col max-h-[95vh]">
         <DialogHeader>
-          <DialogTitle className="font-serif text-3xl">Express Your Interest</DialogTitle>
+          <DialogTitle className="font-serif text-3xl">Seasonal Rental Inquiry</DialogTitle>
           <DialogDescription>
-            Please fill out the form below. We will respond as soon as possible.
+            Please complete the form below.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="flex-1 overflow-y-auto -mx-6 px-6 py-2">
+          <Form {...form}>
+            <form id="contact-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="name"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>Full Name<sup>*</sup></FormLabel>
                   <FormControl>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input placeholder="Alexis Baldwin" className="pl-10" {...field} />
+                      <Input 
+                        placeholder="Alexis Baldwin" 
+                        autoComplete="name"
+                        className={cn("pl-10", fieldState.error && "border-destructive focus-visible:ring-destructive")} 
+                        {...field} 
+                      />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -156,13 +162,19 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
             <FormField
               control={form.control}
               name="email"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email<sup>*</sup></FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input type="email" placeholder="alexis@example.com" className="pl-10" {...field} />
+                      <Input 
+                        type="email" 
+                        autoComplete="email"
+                        placeholder="alexis@example.com" 
+                        className={cn("pl-10", fieldState.error && "border-destructive focus-visible:ring-destructive")} 
+                        {...field} 
+                      />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -174,11 +186,17 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number (optional)</FormLabel>
+                  <FormLabel>Phone Number</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input type="tel" placeholder="(212) 555-1212" className="pl-10" {...field} />
+                      <Input 
+                        type="tel" 
+                        autoComplete="tel"
+                        placeholder="(212) 555-1212" 
+                        className="pl-10" 
+                        {...field} 
+                      />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -195,12 +213,12 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                     <div className="relative">
                       <Calendar className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
                       <select
-                        className="w-full appearance-none rounded-md border border-input bg-background py-2 pl-10 pr-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        className="flex h-10 w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         value={field.value ?? ""}
                         onChange={(event) => field.onChange(event.target.value)}
                       >
                         <option value="" disabled>
-                          Please click to select rental period of interest
+                          Click to select rental period of interest
                         </option>
                         {PROPERTY_CONFIG.rentPeriods.map((period) => (
                           <option key={period.id} value={period.id}>
@@ -233,26 +251,32 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                 </FormItem>
               )}
             />
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                className="flex-1"
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1 bg-accent hover:bg-accent/90"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Submitting..." : "Submit"}
-              </Button>
-            </div>
           </form>
         </Form>
+        </div>
+        <div className="border-t pt-4 -mx-6 px-6 -mb-6 pb-6 bg-background">
+          <p className="text-xs text-muted-foreground mb-3">
+            <sup className="text-destructive">*</sup>Required
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              form="contact-form"
+              className="bg-accent hover:bg-accent/90"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
