@@ -16,4 +16,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    minify: 'esbuild',
+    rollupOptions: {
+      treeshake: true,
+    },
+    modulePreload: false, // Performance optimization to reduce initial load blocking
+  },
 });

@@ -1,5 +1,32 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Playfair Display";
+  src: url("./assets/fonts/playfair-display-v40-latin-regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("./assets/fonts/playfair-display-v40-latin-600.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("./assets/fonts/playfair-display-v40-latin-700.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
@@ -51,32 +78,32 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Brand palette as HSL triples */
-    --carbon-black: 207 18% 12%;       /* hsla(203, 18%, 20%, 1) */
-    --toasted-almond: 28 90% 58%;   /* hsla(24, 50%, 58%, 1) */
-    --dark-teal: 193 48% 24%;       /* hsla(193, 48%, 24%, 1) */
-    --white: 240 100% 100%;         /* hsla(240, 100%, 100%, 1) */
-    --white-smoke: 120 5% 96%;   /* hsla(120, 4%, 91%, 1) */
+    --carbon-black: 207 18% 12%; /* hsla(203, 18%, 20%, 1) */
+    --toasted-almond: 28 90% 58%; /* hsla(24, 50%, 58%, 1) */
+    --dark-teal: 193 48% 24%; /* hsla(193, 48%, 24%, 1) */
+    --white: 240 100% 100%; /* hsla(240, 100%, 100%, 1) */
+    --white-smoke: 120 5% 96%; /* hsla(120, 4%, 91%, 1) */
 
     /* Base surfaces */
-    --background: var(--white);  /* page background: soft grey */
-    --foreground: var(--carbon-black);       /* main text color */
+    --background: var(--white); /* page background: soft grey */
+    --foreground: var(--carbon-black); /* main text color */
 
-    --card: var(--white);                 /* white cards on grey background */
+    --card: var(--white); /* white cards on grey background */
     --card-foreground: var(--carbon-black);
 
     --popover: var(--white);
     --popover-foreground: var(--carbon-black);
 
     /* Primary: bottom bar + primary buttons/ink */
-    --primary: var(--carbon-black);          /* bottom bar “black” */
-    --primary-foreground: var(--white);   /* text on bottom bar */
+    --primary: var(--carbon-black); /* bottom bar “black” */
+    --primary-foreground: var(--white); /* text on bottom bar */
 
     /* Secondary / muted surfaces */
-    --secondary: var(--white-smoke);   /* subtle panels/badges */
+    --secondary: var(--white-smoke); /* subtle panels/badges */
     --secondary-foreground: var(--carbon-black);
 
-    --muted: 120 4% 86%;                  /* slightly darker alabaster */
-    --muted-foreground: 203 10% 40%;      /* softer carbon-black */
+    --muted: 120 4% 86%; /* slightly darker alabaster */
+    --muted-foreground: 203 10% 40%; /* softer carbon-black */
 
     /* Accent: Express Interest, icons, dots, etc. */
     --accent: var(--toasted-almond);
@@ -87,14 +114,18 @@ All colors MUST be HSL.
     --destructive-foreground: 210 40% 98%;
 
     /* Borders / inputs / focus ring */
-    --border: 120 4% 82%;                 /* line on alabaster */
+    --border: 120 4% 82%; /* line on alabaster */
     --input: 120 4% 82%;
-    --ring: var(--dark-teal);             /* teal focus outline */
+    --ring: var(--dark-teal); /* teal focus outline */
 
     --radius: 0.75rem;
 
     /* Custom design tokens you already had */
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+    --gradient-overlay: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
     --shadow-elegant: 0 20px 60px -15px rgba(0, 0, 0, 0.3);
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -108,7 +139,6 @@ All colors MUST be HSL.
     --sidebar-border: 120 4% 82%;
     --sidebar-ring: var(--dark-teal);
   }
-
 
   .dark {
     --background: 24 10% 10%;

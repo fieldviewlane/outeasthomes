@@ -1,28 +1,42 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import pool from "@/assets/pool.avif";
-import livingRoom from "@/assets/living-room.avif";
-import kitchen from "@/assets/kitchen.avif";
-import bedroom from "@/assets/bedroom.avif";
-import backyard from "@/assets/backyard.avif";
-import exterior from "@/assets/exterior.avif";
+import poolLarge from "@/assets/pool-large.avif";
+import poolMedium from "@/assets/pool-medium.avif";
+import poolSmall from "@/assets/pool-small.avif";
+import livingRoomLarge from "@/assets/living-room-large.avif";
+import livingRoomMedium from "@/assets/living-room-medium.avif";
+import livingRoomSmall from "@/assets/living-room-small.avif";
+import kitchenLarge from "@/assets/kitchen-large.avif";
+import kitchenMedium from "@/assets/kitchen-medium.avif";
+import kitchenSmall from "@/assets/kitchen-small.avif";
+import bedroomLarge from "@/assets/bedroom-large.avif";
+import bedroomMedium from "@/assets/bedroom-medium.avif";
+import bedroomSmall from "@/assets/bedroom-small.avif";
+import backyardLarge from "@/assets/backyard-large.avif";
+import backyardMedium from "@/assets/backyard-medium.avif";
+import backyardSmall from "@/assets/backyard-small.avif";
+import exteriorLarge from "@/assets/exterior-large.avif";
+import exteriorMedium from "@/assets/exterior-medium.avif";
+import exteriorSmall from "@/assets/exterior-small.avif";
 
 
 type ImageConfig = {
   id: string;
-  src: string;
+  srcLarge: string;
+  srcMedium: string;
+  srcSmall: string;
   title: string;
   description: string;
 };
 
 const images: ImageConfig[] = [
-  { id: "pool", src: pool, title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
-  { id: "living-room", src: livingRoom, title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
-  { id: "kitchen", src: kitchen, title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
-  { id: "backyard", src: backyard, title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
-  { id: "bedroom", src: bedroom, title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
-  { id: "exterior", src: exterior, title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
+  { id: "pool", srcLarge: poolLarge, srcMedium: poolMedium, srcSmall: poolSmall, title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
+  { id: "living-room", srcLarge: livingRoomLarge, srcMedium: livingRoomMedium, srcSmall: livingRoomSmall, title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
+  { id: "kitchen", srcLarge: kitchenLarge, srcMedium: kitchenMedium, srcSmall: kitchenSmall, title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
+  { id: "backyard", srcLarge: backyardLarge, srcMedium: backyardMedium, srcSmall: backyardSmall, title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
+  { id: "bedroom", srcLarge: bedroomLarge, srcMedium: bedroomMedium, srcSmall: bedroomSmall, title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
+  { id: "exterior", srcLarge: exteriorLarge, srcMedium: exteriorMedium, srcSmall: exteriorSmall, title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
 ];
 
 const getInitialIndex = () => {
@@ -112,11 +126,18 @@ export const HorizontalCarousel = () => {
       >
         {images.map((image, index) => (
           <div key={index} id={image.id} className="relative min-w-full h-full">
-            <img
-              src={image.src}
-              alt={image.title}
-              className="w-full h-full object-cover"
-            />
+            <picture>
+              <source media="(min-width: 1200px)" srcSet={image.srcLarge} />
+              <source media="(min-width: 600px)" srcSet={image.srcMedium} />
+              <img
+                src={image.srcSmall}
+                alt={image.title}
+                className="w-full h-full object-cover"
+                loading={index === 0 ? "eager" : "lazy"}
+                fetchPriority={index === 0 ? "high" : "auto"}
+                decoding="async"
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <div className="absolute bottom-24 left-8 right-8 md:left-16 md:right-16 max-w-2xl animate-fade-in">
               <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl font-bold text-primary-foreground mb-2 sm:mb-3 md:mb-4">
