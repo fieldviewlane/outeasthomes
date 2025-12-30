@@ -128,7 +128,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         if (!open) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-[500px] max-h-[95vh] p-0 gap-0 overflow-hidden flex flex-col">
+      <DialogContent className="sm:max-w-[500px] h-auto max-h-[100dvh] sm:max-h-[90vh] top-0 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] p-0 gap-0 overflow-hidden flex flex-col">
         <DialogHeader className="p-6 pb-2 shrink-0 bg-background z-10 border-b">
           <DialogTitle className="font-serif text-3xl">Seasonal Rental Inquiry</DialogTitle>
           <DialogDescription>
