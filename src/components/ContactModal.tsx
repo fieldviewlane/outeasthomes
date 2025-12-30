@@ -127,7 +127,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         if (!open) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-[500px] h-[100dvh] sm:h-auto w-full max-w-none sm:rounded-lg top-0 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] p-0 gap-0 overflow-hidden flex flex-col border-0 sm:border">
+      <DialogContent className="sm:max-w-[500px] h-[100dvh] sm:h-auto w-full max-w-none sm:rounded-lg top-0 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] p-0 gap-0 overflow-hidden flex flex-col border-0 sm:border relative">
         <div className="p-6 pb-4">
           <DialogHeader>
             <DialogTitle className="font-serif text-3xl">Seasonal Rental Inquiry</DialogTitle>
@@ -136,7 +136,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
             </DialogDescription>
           </DialogHeader>
         </div>
-        <div className="flex-1 overflow-y-auto px-6">
+        <div className="flex-1 overflow-y-auto px-6 pb-[140px] sm:pb-4">
           <Form {...form}>
             <form id="contact-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-4">
             <FormField
@@ -255,7 +255,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
           </form>
         </Form>
         </div>
-        <div className="border-t bg-background px-6 py-4">
+        <div className="absolute bottom-0 left-0 right-0 border-t bg-background px-6 py-4 sm:relative sm:border-t">
           <p className="text-xs text-muted-foreground mb-3">
             <sup className="text-destructive">*</sup>Required
           </p>
