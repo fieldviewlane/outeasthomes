@@ -128,7 +128,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       }}
     >
       <DialogContent className="sm:max-w-[500px] h-[100dvh] sm:h-auto w-full max-w-none sm:rounded-lg top-0 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] p-0 gap-0 overflow-hidden flex flex-col border-0 sm:border">
-        <div className="p-6 pb-2">
+        <div className="p-6 pb-4">
           <DialogHeader>
             <DialogTitle className="font-serif text-3xl">Express Your Interest</DialogTitle>
             <DialogDescription>
@@ -136,9 +136,9 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
             </DialogDescription>
           </DialogHeader>
         </div>
-        <div className="flex-1 overflow-y-auto px-6 py-2">
+        <div className="flex-1 overflow-y-auto px-6">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex flex-col min-h-full">
+            <form id="contact-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-4">
             <FormField
               control={form.control}
               name="name"
@@ -252,31 +252,31 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                 </FormItem>
               )}
             />
-            <div className="flex-1" />
-            <div className="space-y-4 pt-2 pb-6 sm:pb-0">
-              <p className="text-xs text-muted-foreground">
-                <sup className="text-destructive">*</sup>Required
-              </p>
-              <div className="grid grid-cols-2 gap-3 bg-background sticky bottom-0 z-10">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onClose}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-accent hover:bg-accent/90"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Submitting..." : "Submit"}
-                </Button>
-              </div>
-            </div>
           </form>
         </Form>
+        </div>
+        <div className="border-t bg-background px-6 py-4">
+          <p className="text-xs text-muted-foreground mb-3">
+            <sup className="text-destructive">*</sup>Required
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              form="contact-form"
+              className="bg-accent hover:bg-accent/90"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
