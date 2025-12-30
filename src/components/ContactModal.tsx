@@ -128,14 +128,14 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         if (!open) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-[500px] flex flex-col h-[100dvh] sm:h-auto sm:max-h-[90vh]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[500px] max-h-[95vh] p-0 gap-0 overflow-hidden flex flex-col">
+        <DialogHeader className="p-6 pb-2 shrink-0 bg-background z-10 border-b">
           <DialogTitle className="font-serif text-3xl">Seasonal Rental Inquiry</DialogTitle>
           <DialogDescription>
             Please complete the form below.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-1 overflow-y-auto -mx-6 px-6 py-2">
+        <div className="flex-1 overflow-y-auto p-6 pt-2">
           <Form {...form}>
             <form id="contact-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -213,7 +213,10 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                     <div className="relative">
                       <Calendar className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
                       <select
-                        className="flex h-10 w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className={cn(
+                          "flex h-10 w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                          field.value === undefined && "text-muted-foreground"
+                        )}
                         value={field.value ?? ""}
                         onChange={(event) => field.onChange(event.target.value)}
                       >
@@ -242,7 +245,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                   <FormControl>
                       <Textarea
                       placeholder="Please tell us about yourselves and list any questions you might have"
-                      className="min-h-[100px] resize-none"
+                      className="min-h-[50px] sm:min-h-[100px] resize-none"
                       value={field.value ?? ""}
                       onChange={field.onChange}
                     />
@@ -253,11 +256,12 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
             />
           </form>
         </Form>
+        <br></br>
+        <p className="text-xs text-muted-foreground mb-3 float-right">
+          <sup>*</sup>Required
+        </p>
         </div>
-        <div className="border-t pt-4 -mx-6 px-6 -mb-6 pb-6 bg-background">
-          <p className="text-xs text-muted-foreground mb-3">
-            <sup className="text-destructive">*</sup>Required
-          </p>
+        <div className="p-6 pt-4 border-t bg-background z-10 shrink-0">
           <div className="grid grid-cols-2 gap-3">
             <Button
               type="button"
