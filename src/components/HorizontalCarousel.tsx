@@ -119,7 +119,7 @@ export const HorizontalCarousel = () => {
   }, [currentIndex, syncHash]);
 
   return (
-    <section className="relative h-[100dvh] w-full overflow-hidden">
+    <section className="relative h-[92dvh] w-full overflow-hidden">
       <div
         className="flex h-full transition-transform duration-700 ease-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
