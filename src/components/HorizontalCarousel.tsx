@@ -127,14 +127,16 @@ export const HorizontalCarousel = () => {
         {images.map((image, index) => (
           <div key={index} id={image.id} className="relative min-w-full h-full">
             <picture>
-              <source media="(min-width: 1200px)" srcSet={image.srcLarge} />
-              <source media="(min-width: 600px)" srcSet={image.srcMedium} />
+              <source media="(min-width: 1025px)" srcSet={image.srcLarge} />
+              <source media="(min-width: 601px)" srcSet={image.srcMedium} />
               <img
                 src={image.srcSmall}
                 alt={image.title}
-                className="w-full h-full object-cover"
                 loading={index === 0 ? "eager" : "lazy"}
                 fetchPriority={index === 0 ? "high" : "auto"}
+                width="600"
+                height="1067"
+                className="w-full h-full object-cover"
                 decoding="async"
               />
             </picture>
