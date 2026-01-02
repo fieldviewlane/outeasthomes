@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
 import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
 import { Button } from "@/components/ui/button";
@@ -122,8 +122,46 @@ export const HorizontalCarousel = () => {
     }
   }, [currentIndex, syncHash]);
 
+  const [showScrollHint, setShowScrollHint] = useState(false);
+  const [lastIndexReached, setLastIndexReached] = useState(false);
+  const userHasScrolled = useRef(false);
+
+  // Hide hint on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setShowScrollHint(false);
+        userHasScrolled.current = true;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!userHasScrolled.current) {
+        setShowScrollHint(true);
+      }
+    }, 15000); // Show after 15s
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+      if (currentIndex === images.length - 1) {
+        setLastIndexReached(true);
+      }
+      if (lastIndexReached && currentIndex === 0) {
+        if (!userHasScrolled.current) {
+          setShowScrollHint(true);
+        }
+      }
+  }, [currentIndex, lastIndexReached]);
+
   return (
     <section className="relative h-[92dvh] w-full overflow-hidden">
+
       <div
         className="flex h-full transition-transform duration-700 ease-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -176,8 +214,19 @@ export const HorizontalCarousel = () => {
       >
         <ChevronRight className="h-6 w-6" />
       </Button>
+      
+      {/* Scroll Hint Overlay */}
+      <div 
+        className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-1000 ${showScrollHint ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      >
+          <div className="bg-background/80 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-white/20 animate-bounce">
+            <p className="text-xs font-medium text-foreground whitespace-nowrap">
+              Scroll down for more information
+            </p>
+          </div>
+      </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {images.map((_, index) => (
           <button
             key={index}

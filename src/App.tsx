@@ -10,6 +10,12 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
+declare global {
+  interface Window {
+    dataLayer: unknown[];
+  }
+}
+
 const App = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -18,10 +24,10 @@ const App = () => {
       script.src = "https://www.googletagmanager.com/gtag/js?id=AW-17829976959";
       document.head.appendChild(script);
 
-      const w = window as any;
-      w.dataLayer = w.dataLayer || [];
+      window.dataLayer = window.dataLayer || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       function gtag(...args: any[]) {
-        w.dataLayer.push(args);
+        window.dataLayer.push(args);
       }
       gtag("js", new Date());
       gtag("config", "AW-17829976959");
