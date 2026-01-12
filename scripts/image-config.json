@@ -1,0 +1,20 @@
+{
+    "defaults": {
+        "speed": 6,
+        "blur": 0.05
+    },
+    "images": {
+        "pool": {
+            "offset": "+0-400",
+            "small_q": 48,
+            "medium_q": 62,
+            "large_q": 65
+        },
+        "default_image": {
+            "offset": "+0+0",
+            "small_q": 45,
+            "medium_q": 55,
+            "large_q": 60
+        }
+    }
+}
