@@ -9,7 +9,7 @@ const amenities = [
   "Two-Car Garage with Tesla Charger",
   "Gym with Peloton Bike",
   "Hardwood Floors",
-  "Full Lower Guest Level with Kitchenette and 85” TV",
+  "Full Guest Level with Kitchenette and 85” TV",
 ];
 
 const formatCurrency = (amount: number) =>
@@ -76,11 +76,11 @@ export const PropertyDetails = () => {
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8">Premium Amenities</h2>
           <div className="grid md:grid-cols-2 gap-4">
             {amenities.map((amenity, index) => (
-               <div key={index} className="flex items-center gap-3 group">
-                 <Home className="h-5 w-5 text-accent flex-shrink-0 transition-transform" aria-hidden="true" />
-                 <span className="text-base sm:text-lg text-foreground">{amenity}</span>
-               </div>
-             ))}
+              <div key={index} className="flex items-center gap-3 group">
+                <Home className="h-5 w-5 text-accent flex-shrink-0 transition-transform" aria-hidden="true" />
+                <span className="text-base sm:text-lg text-foreground">{amenity}</span>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -106,7 +106,7 @@ export const PropertyDetails = () => {
         <section className="mb-12 sm:mb-16 md:mb-20">
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">Direct Rental Rates</h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-6 sm:mb-8">
-            Rent directly from the owner and enjoy premium amenities at exclusive rates. 
+            Rent directly from the owner and enjoy premium amenities at exclusive rates.
           </p>
           <div className="w-full md:w-2/3 mx-auto overflow-x-auto rounded-lg border border-border bg-card">
             <table className="w-full text-left">

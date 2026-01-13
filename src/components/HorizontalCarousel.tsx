@@ -3,50 +3,30 @@ import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
 import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
 import { Button } from "@/components/ui/button";
 
-// Static assets from public folder for LCP optimization
-const poolLarge = "/assets/pool-large.avif";
-const poolMedium = "/assets/pool-medium.avif";
-const poolSmall = "/assets/pool-small.avif";
-
-import livingRoomLarge from "@/assets/living-room-large.avif";
-import livingRoomMedium from "@/assets/living-room-medium.avif";
-import livingRoomSmall from "@/assets/living-room-small.avif";
-import kitchenLarge from "@/assets/kitchen-large.avif";
-import kitchenMedium from "@/assets/kitchen-medium.avif";
-import kitchenSmall from "@/assets/kitchen-small.avif";
-import bedroomLarge from "@/assets/bedroom-large.avif";
-import bedroomMedium from "@/assets/bedroom-medium.avif";
-import bedroomSmall from "@/assets/bedroom-small.avif";
-import backyardLarge from "@/assets/backyard-large.avif";
-import backyardMedium from "@/assets/backyard-medium.avif";
-import backyardSmall from "@/assets/backyard-small.avif";
-import exteriorLarge from "@/assets/exterior-large.avif";
-import exteriorMedium from "@/assets/exterior-medium.avif";
-import exteriorSmall from "@/assets/exterior-small.avif";
-
-
-type ImageConfig = {
+type CarouselImage = {
   id: string;
-  srcLarge: string;
-  srcMedium: string;
-  srcSmall: string;
   title: string;
   description: string;
 };
 
-const images: ImageConfig[] = [
-  { id: "pool", srcLarge: poolLarge, srcMedium: poolMedium, srcSmall: poolSmall, title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
-  { id: "living-room", srcLarge: livingRoomLarge, srcMedium: livingRoomMedium, srcSmall: livingRoomSmall, title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
-  { id: "kitchen", srcLarge: kitchenLarge, srcMedium: kitchenMedium, srcSmall: kitchenSmall, title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
-  { id: "backyard", srcLarge: backyardLarge, srcMedium: backyardMedium, srcSmall: backyardSmall, title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
-  { id: "bedroom", srcLarge: bedroomLarge, srcMedium: bedroomMedium, srcSmall: bedroomSmall, title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
-  { id: "exterior", srcLarge: exteriorLarge, srcMedium: exteriorMedium, srcSmall: exteriorSmall, title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
+const carouselData: CarouselImage[] = [
+  { id: "pool", title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
+  { id: "living-room", title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
+  { id: "kitchen", title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
+  { id: "backyard", title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
+  { id: "bedroom", title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
+  { id: "bath_primary", title: "Spa-Like Primary Bathroom", description: "A serene space with soaking tub and walk-in shower" },
+  { id: "gym", title: "Private Gym", description: "A fully equipped space to keep up your routine" },
+  { id: "bed_balcony", title: "Bedroom with Private Balcony", description: "Morning light and fresh air just outside your door" },
+  { id: "kitchenette_den", title: "Second living area", description: "A complete second space for family, friends, and nannies" },
+  { id: "bed_corner", title: "Peaceful Corner Bedroom", description: "A spacious corner bedroom with desk" },
+  { id: "front", title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
 ];
 
 const getInitialIndex = () => {
   if (typeof window === "undefined") return 0;
   const hash = window.location.hash.replace("#", "");
-  const index = images.findIndex((image) => image.id === hash);
+  const index = carouselData.findIndex((image) => image.id === hash);
   return index !== -1 ? index : 0;
 };
 
@@ -60,12 +40,12 @@ export const HorizontalCarousel = () => {
 
   const nextSlide = () => {
     setIsPaused(true);
-    setCurrentIndex((prev) => (prev + 1) % images.length);
+    setCurrentIndex((prev) => (prev + 1) % carouselData.length);
   };
 
   const prevSlide = () => {
     setIsPaused(true);
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setCurrentIndex((prev) => (prev - 1 + carouselData.length) % carouselData.length);
   };
 
   useEffect(() => {
@@ -83,7 +63,7 @@ export const HorizontalCarousel = () => {
     if (isPaused) return;
 
     const interval = window.setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
+      setCurrentIndex((prev) => (prev + 1) % carouselData.length);
     }, 3000);
 
     return () => window.clearInterval(interval);
@@ -94,7 +74,7 @@ export const HorizontalCarousel = () => {
 
     const handleHashChange = () => {
       const hash = window.location.hash.replace("#", "");
-      const index = images.findIndex((image) => image.id === hash);
+      const index = carouselData.findIndex((image) => image.id === hash);
       if (index !== -1) {
         setIsPaused(true);
         setCurrentIndex(index);
@@ -113,7 +93,7 @@ export const HorizontalCarousel = () => {
     // don't modify the URL when just visiting outeasthomes.com.
     if (!syncHash) return;
 
-    const image = images[currentIndex];
+    const image = carouselData[currentIndex];
     if (!image) return;
 
     const newHash = `#${image.id}`;
@@ -149,14 +129,14 @@ export const HorizontalCarousel = () => {
   }, []);
 
   useEffect(() => {
-      if (currentIndex === images.length - 1) {
-        setLastIndexReached(true);
+    if (currentIndex === carouselData.length - 1) {
+      setLastIndexReached(true);
+    }
+    if (lastIndexReached && currentIndex === 0) {
+      if (!userHasScrolled.current) {
+        setShowScrollHint(true);
       }
-      if (lastIndexReached && currentIndex === 0) {
-        if (!userHasScrolled.current) {
-          setShowScrollHint(true);
-        }
-      }
+    }
   }, [currentIndex, lastIndexReached]);
 
   return (
@@ -166,33 +146,41 @@ export const HorizontalCarousel = () => {
         className="flex h-full transition-transform duration-700 ease-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
-        {images.map((image, index) => (
-          <div key={index} id={image.id} className="relative min-w-full h-full">
-            <picture>
-              <source media="(min-width: 1025px)" srcSet={image.srcLarge} />
-              <source media="(min-width: 601px)" srcSet={image.srcMedium} />
-              <img
-                src={image.srcSmall}
-                alt={image.title}
-                loading={index === 0 ? "eager" : "lazy"}
-                fetchPriority={index === 0 ? "high" : "auto"}
-                width="600"
-                height="1067"
-                className="w-full h-full object-cover"
-                decoding="async"
-              />
-            </picture>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-24 left-8 right-8 md:left-16 md:right-16 max-w-2xl animate-fade-in">
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl font-bold text-primary-foreground mb-2 sm:mb-3 md:mb-4">
-                {image.title}
-              </h2>
-              <p className="text-base sm:text-lg md:text-xl text-primary-foreground/90">
-                {image.description}
-              </p>
+        {carouselData.map((img, index) => {
+          // Generate paths dynamically based on the ID
+          const srcSmall = `/assets/${img.id}-small.avif`;
+          const srcMedium = `/assets/${img.id}-medium.avif`;
+          const srcLarge = `/assets/${img.id}-large.avif`;
+
+          return (
+            <div key={img.id} id={img.id} className="relative min-w-full h-full">
+              <picture>
+                <source media="(min-width: 1025px)" srcSet={srcLarge} />
+                <source media="(min-width: 601px)" srcSet={srcMedium} />
+                <img
+                  src={srcSmall}
+                  alt={img.title}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  // @ts-ignore
+                  fetchpriority={index === 0 ? "high" : "auto"}
+                  width="600"
+                  height="1067"
+                  className="w-full h-full object-cover"
+                  decoding="async"
+                />
+              </picture>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute bottom-24 left-8 right-8 md:left-16 md:right-16 max-w-2xl animate-fade-in">
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl font-bold text-primary-foreground mb-2 sm:mb-3 md:mb-4">
+                  {img.title}
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl text-primary-foreground/90">
+                  {img.description}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <Button
@@ -214,29 +202,28 @@ export const HorizontalCarousel = () => {
       >
         <ChevronRight className="h-6 w-6" />
       </Button>
-      
+
       {/* Scroll Hint Overlay */}
-      <div 
+      <div
         className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-1000 ${showScrollHint ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       >
-          <div className="bg-background/80 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-white/20 animate-bounce">
-            <p className="text-xs font-medium text-foreground whitespace-nowrap">
-              Scroll down for more information
-            </p>
-          </div>
+        <div className="bg-background/80 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-white/20 animate-bounce">
+          <p className="text-xs font-medium text-foreground whitespace-nowrap">
+            Scroll down for more information
+          </p>
+        </div>
       </div>
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        {images.map((_, index) => (
+        {carouselData.map((_, index) => (
           <button
             key={index}
             onClick={() => {
               setIsPaused(true);
               setCurrentIndex(index);
             }}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              index === currentIndex ? "w-8 bg-accent" : "w-2 bg-primary-foreground/50"
-            }`}
+            className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex ? "w-8 bg-accent" : "w-2 bg-primary-foreground/50"
+              }`}
             aria-label={`Go to image ${index + 1}`}
           />
         ))}

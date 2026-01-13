@@ -5,8 +5,8 @@ import path from 'path';
 const rawConfig = JSON.parse(fs.readFileSync('./scripts/image-config.json', 'utf8'));
 const { defaults, images } = rawConfig;
 
-const inputDir = './src/assets/originals';
-const outputDir = './public/assets';
+const inputDir = '../src/assets/originals';
+const outputDir = '../magick_optimization';
 
 if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 

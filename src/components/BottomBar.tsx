@@ -1,4 +1,4 @@
-import { useMemo, useState, lazy, Suspense } from "react";
+import { useMemo, useState, useEffect, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PROPERTY_CONFIG, type RentPeriodId } from "@/config/property";
@@ -17,6 +17,38 @@ export const BottomBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
   const [selectedPeriodId, setSelectedPeriodId] = useState<RentPeriodId>(PROPERTY_CONFIG.defaultPeriodId);
+  const [shouldGlow, setShouldGlow] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    const GLO_TIME = 20000; // 20 seconds
+
+    const handleScroll = () => {
+      // Check if user is scrolled at least halfway
+      const scrollPos = window.scrollY + window.innerHeight;
+      const totalHeight = document.documentElement.scrollHeight;
+      const halfway = totalHeight / 2;
+
+      if (scrollPos >= halfway && !shouldGlow) {
+        // Start timer if not already running
+        if (!timer) {
+          timer = setTimeout(() => {
+            setShouldGlow(true);
+          }, GLO_TIME);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Initial check in case they're already halfway
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (timer) clearTimeout(timer);
+    };
+  }, [shouldGlow]);
+
 
   const { selectedPeriod, formattedAmount } = useMemo(() => {
     const periods = PROPERTY_CONFIG.rentPeriods;
@@ -86,9 +118,9 @@ export const BottomBar = () => {
 
           <div className="hidden md:flex flex-col items-center justify-center flex-1">
             <div className="text-sm md:text-base font-medium text-primary-foreground">
-              {PROPERTY_CONFIG.bedrooms} Bed 
+              {PROPERTY_CONFIG.bedrooms} Bed
               <span className="mx-1">|</span>
-              {PROPERTY_CONFIG.bathrooms} Bath 
+              {PROPERTY_CONFIG.bathrooms} Bath
               <span className="mx-1">|</span>
               {PROPERTY_CONFIG.squareFeet.toLocaleString()} Sq Ft
             </div>
@@ -96,7 +128,7 @@ export const BottomBar = () => {
 
           <Button
             size="lg"
-            className="w-3/4 sm:w-1/2 md:w-auto md:flex-shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-sm sm:text-base md:text-lg px-3 sm:px-4 md:px-6 py-1 sm:py-2 md:py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className={`w-3/4 sm:w-1/2 md:w-auto md:flex-shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-sm sm:text-base md:text-lg px-3 sm:px-4 md:px-6 py-1 sm:py-2 md:py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${shouldGlow ? "animate-glow" : ""}`}
             onClick={handleOpenModal}
           >
             Express Interest
