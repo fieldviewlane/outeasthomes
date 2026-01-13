@@ -13,6 +13,9 @@ const queryClient = new QueryClient();
 declare global {
   interface Window {
     dataLayer: unknown[];
+    // Google Ads gtag function injected at runtime
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    gtag?: (...args: any[]) => void;
   }
 }
 
@@ -29,6 +32,10 @@ const App = () => {
       function gtag(...args: any[]) {
         window.dataLayer.push(args);
       }
+
+      // Expose gtag globally so other modules (e.g. ContactModal) can fire conversions
+      window.gtag = gtag;
+
       gtag("js", new Date());
       gtag("config", "AW-17829976959");
     }, 3000);
