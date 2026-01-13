@@ -77,7 +77,7 @@ export const PropertyDetails = () => {
           <div className="grid md:grid-cols-2 gap-4">
             {amenities.map((amenity, index) => (
               <div key={index} className="flex items-center gap-3 group">
-                <Home className="h-5 w-5 text-accent flex-shrink-0 transition-transform" aria-hidden="true" />
+                <Home className="h-5 w-5 text-accent shrink-0 transition-transform" aria-hidden="true" />
                 <span className="text-base sm:text-lg text-foreground">{amenity}</span>
               </div>
             ))}
