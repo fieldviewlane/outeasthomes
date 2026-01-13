@@ -40,7 +40,7 @@ stage0_baseline() {
 }
 
 # ----------------------------
-# Stage1/Stage2: AVIF binary search
+# Stage1/Stage2: AVIF binary search (size-only; DSSIM evaluated by caller)
 # ----------------------------
 stage_avif_search() {
     local SRC="$1" WIDTH="$2" MINQ="$3" MAXQ="$4"
@@ -51,10 +51,6 @@ stage_avif_search() {
 
     # Track best candidate under the byte cap (regardless of DSSIM)
     local BESTQ=-1 BESTSIZE=0 BESTDSSIM=1.0 BESTFILE=""
-
-    # Optionally track best candidate that ALSO satisfies a DSSIM threshold
-    local MAX_DSSIM=$(get_dssim_threshold "$WIDTH")
-    local BESTQ_OK=-1 BESTSIZE_OK=0 BESTDSSIM_OK=1.0 BESTFILE_OK=""
 
     # Get encoding settings from shared config
     local ENC_FLAGS=$(get_encoding_flags "$WIDTH")
@@ -92,21 +88,6 @@ stage_avif_search() {
                 BESTFILE="$TMP"
             fi
 
-            # If a DSSIM threshold is configured (>0), also track the sharpest
-            # candidate that satisfies it.
-            if (( $(echo "$MAX_DSSIM > 0" | bc -l) )) && \
-               (( $(echo "$DSSIM <= $MAX_DSSIM" | bc -l) )); then
-                if [ -z "$BESTFILE_OK" ] || \
-                   (( $(echo "$DSSIM < $BESTDSSIM_OK" | bc -l) )) || \
-                   ( (( $(echo "$DSSIM == $BESTDSSIM_OK" | bc -l) )) && \
-                     (( $(echo "$SIZE > $BESTSIZE_OK" | bc -l) )) ); then
-                    BESTQ_OK=$MID
-                    BESTSIZE_OK=$SIZE
-                    BESTDSSIM_OK=$DSSIM
-                    BESTFILE_OK="$TMP"
-                fi
-            fi
-
             LOW=$((MID+1)) # Try higher quality
         else
             HIGH=$((MID-1)) # Too big, try lower quality
@@ -114,13 +95,7 @@ stage_avif_search() {
     done
     rm -f "$RESIZED_REF"
 
-    # Prefer a candidate that satisfies the DSSIM constraint if one exists,
-    # otherwise fall back to the best size-under-cap candidate.
-    if [ -n "$BESTFILE_OK" ]; then
-        echo "$BESTQ_OK $BESTSIZE_OK $BESTDSSIM_OK $BESTFILE_OK"
-    else
-        echo "$BESTQ $BESTSIZE $BESTDSSIM $BESTFILE"
-    fi
+    echo "$BESTQ $BESTSIZE $BESTDSSIM $BESTFILE"
 }
 
 # ----------------------------
@@ -138,49 +113,25 @@ FINAL_Q=0
 FINAL_SIZE=0
 FINAL_DSSIM=1.0
 
-# Try the target width first with Stage 1 (straight encode)
-WIDTH=$WIDTH_GOAL
-read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" $MIN_QUALITY $MAX_QUALITY "S1")
+# Helper to run the full pipeline (Stage 1 + Stage 2 preprocessing) for a
+# given width and current TARGET_KB. Returns best candidate that satisfies
+# the DSSIM threshold if possible. If none satisfy the threshold, returns
+# an empty result.
+run_pipeline_for_width() {
+    local WIDTH="$1"
+    local THRESHOLD=$(get_dssim_threshold "$WIDTH")
 
-if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )); then
-    FINAL_W=$WIDTH; FINAL_Q=$BQ; FINAL_SIZE=$BS; FINAL_DSSIM=$BD; FINAL_FILE=$BF
-else
-    # Stage 1 failed at target width, try Stage 2 (preprocessing) at target width
-    log "   ⚠️  Stage 1 at ${WIDTH}px failed. Trying Stage 2 (preprocessing)..."
-    
-    for STEP in "blur" "median"; do
-        PRE_IMG="$OUTPUT_DIR/pre_${STEP}_${WIDTH}.png"
-        if [ "$STEP" == "blur" ]; then 
-            magick "$SRC" -gravity center -crop ${CROP_RATIO}$OFFSET -resize ${WIDTH}x -blur 0x0.5 "$PRE_IMG"
-        else 
-            magick "$SRC" -gravity center -crop ${CROP_RATIO}$OFFSET -resize ${WIDTH}x -statistic Median 3x3 "$PRE_IMG"
-        fi
-        
-        read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAX_QUALITY "S2_$STEP" "$PRE_IMG")
-        rm -f "$PRE_IMG"
-        
-        if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )); then
-            FINAL_W=$WIDTH; FINAL_Q=$BQ; FINAL_SIZE=$BS; FINAL_DSSIM=$BD; FINAL_FILE=$BF
-            log "   ✅ Stage 2 ($STEP) succeeded at ${WIDTH}px"
-            break
-        fi
-    done
-fi
+    local BEST_W=0 BEST_Q=0 BEST_SIZE=0 BEST_DSSIM=1.0 BEST_FILE=""
 
-# If still no success, try smaller resolutions with Stage 1
-if [ -z "$FINAL_FILE" ]; then
-    log "   ⚠️  Trying smaller resolutions..."
-    for WIDTH in "${RESOLUTIONS[@]}"; do
-        [ "$WIDTH" -ge "$WIDTH_GOAL" ] && continue  # Skip widths >= target
-        
-        read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAX_QUALITY "S1")
-        
-        if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )); then
-            FINAL_W=$WIDTH; FINAL_Q=$BQ; FINAL_SIZE=$BS; FINAL_DSSIM=$BD; FINAL_FILE=$BF
-            break
-        fi
-        
-        # If Stage 1 fails at this smaller width, try Stage 2
+    # Try Stage 1 (no preprocessing)
+    read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" $MIN_QUALITY $MAX_QUALITY "S1")
+    if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )) && \
+       (( $(echo "$THRESHOLD <= 0" | bc -l) )) || (( $(echo "$BD <= $THRESHOLD" | bc -l) )); then
+        BEST_W=$WIDTH; BEST_Q=$BQ; BEST_SIZE=$BS; BEST_DSSIM=$BD; BEST_FILE=$BF
+    fi
+
+    # Stage 2 (preprocessing) only if we still haven't met the threshold
+    if [ -z "$BEST_FILE" ]; then
         for STEP in "blur" "median"; do
             PRE_IMG="$OUTPUT_DIR/pre_${STEP}_${WIDTH}.png"
             if [ "$STEP" == "blur" ]; then 
@@ -192,12 +143,77 @@ if [ -z "$FINAL_FILE" ]; then
             read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAX_QUALITY "S2_$STEP" "$PRE_IMG")
             rm -f "$PRE_IMG"
             
-            if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )); then
-                FINAL_W=$WIDTH; FINAL_Q=$BQ; FINAL_SIZE=$BS; FINAL_DSSIM=$BD; FINAL_FILE=$BF
-                log "   ✅ Stage 2 ($STEP) succeeded at ${WIDTH}px"
-                break 2
+            if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )) && \
+               ( (( $(echo "$THRESHOLD <= 0" | bc -l) )) || (( $(echo "$BD <= $THRESHOLD" | bc -l) )) ); then
+                BEST_W=$WIDTH; BEST_Q=$BQ; BEST_SIZE=$BS; BEST_DSSIM=$BD; BEST_FILE=$BF
+                log "   ✅ Stage 2 ($STEP) succeeded at ${WIDTH}px under ${TARGET_KB}KB cap"
+                break
             fi
         done
+    fi
+
+    if [ -n "$BEST_FILE" ]; then
+        echo "$BEST_W $BEST_Q $BEST_SIZE $BEST_DSSIM $BEST_FILE"
+    else
+        echo "0 0 0 0 "
+    fi
+}
+
+# Multi-step degradation strategy:
+# 1. Try to hit DSSIM threshold at the original TARGET_KB and WIDTH_GOAL.
+# 2. If that fails, relax the cap by 1.5x and try again at WIDTH_GOAL.
+# 3. If that still fails, move to lower resolution tiers and repeat steps 1–2.
+
+BASE_TARGET_KB=$TARGET_KB
+RELAXED_TARGET_KB=$(( BASE_TARGET_KB * 3 / 2 ))
+
+# Step 1 & 2 at target width
+WIDTH=$WIDTH_GOAL
+log "   ➤ Phase 1: target width ${WIDTH}px @ ${BASE_TARGET_KB}KB (then ${RELAXED_TARGET_KB}KB if needed)"
+
+# Phase 1a: original cap
+TARGET_KB=$BASE_TARGET_KB
+read FW FQ FS FD FF <<< $(run_pipeline_for_width "$WIDTH")
+
+if [ -n "$FF" ]; then
+    FINAL_W=$FW; FINAL_Q=$FQ; FINAL_SIZE=$FS; FINAL_DSSIM=$FD; FINAL_FILE=$FF
+else
+    # Phase 1b: relaxed cap
+    TARGET_KB=$RELAXED_TARGET_KB
+    log "   ⚠️  DSSIM threshold not met at base cap; retrying at relaxed cap ${TARGET_KB}KB"
+    read FW FQ FS FD FF <<< $(run_pipeline_for_width "$WIDTH")
+
+    if [ -n "$FF" ]; then
+        FINAL_W=$FW; FINAL_Q=$FQ; FINAL_SIZE=$FS; FINAL_DSSIM=$FD; FINAL_FILE=$FF
+    fi
+fi
+
+# If still no success, try smaller resolutions with the same two-phase strategy
+if [ -z "$FINAL_FILE" ]; then
+    log "   ⚠️  Trying smaller resolutions with degradation strategy..."
+    for WIDTH in "${RESOLUTIONS[@]}"; do
+        [ "$WIDTH" -ge "$WIDTH_GOAL" ] && continue  # Skip widths >= target
+
+        log "   ➤ Phase 2: width ${WIDTH}px @ ${BASE_TARGET_KB}KB (then ${RELAXED_TARGET_KB}KB if needed)"
+
+        # Reset to base cap for this width
+        TARGET_KB=$BASE_TARGET_KB
+        read FW FQ FS FD FF <<< $(run_pipeline_for_width "$WIDTH")
+
+        if [ -n "$FF" ]; then
+            FINAL_W=$FW; FINAL_Q=$FQ; FINAL_SIZE=$FS; FINAL_DSSIM=$FD; FINAL_FILE=$FF
+            break
+        fi
+
+        # Retry with relaxed cap at this width
+        TARGET_KB=$RELAXED_TARGET_KB
+        log "   ⚠️  DSSIM threshold not met at base cap; retrying at relaxed cap ${TARGET_KB}KB for width ${WIDTH}px"
+        read FW FQ FS FD FF <<< $(run_pipeline_for_width "$WIDTH")
+
+        if [ -n "$FF" ]; then
+            FINAL_W=$FW; FINAL_Q=$FQ; FINAL_SIZE=$FS; FINAL_DSSIM=$FD; FINAL_FILE=$FF
+            break
+        fi
     done
 fi
 
