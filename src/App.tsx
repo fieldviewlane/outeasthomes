@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,29 +20,6 @@ declare global {
 }
 
 const App = () => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const script = document.createElement("script");
-      script.async = true;
-      script.src = "https://www.googletagmanager.com/gtag/js?id=AW-17829976959";
-      document.head.appendChild(script);
-
-      window.dataLayer = window.dataLayer || [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      function gtag(...args: any[]) {
-        window.dataLayer.push(args);
-      }
-
-      // Expose gtag globally so other modules (e.g. ContactModal) can fire conversions
-      window.gtag = gtag;
-
-      gtag("js", new Date());
-      gtag("config", "AW-17829976959");
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
