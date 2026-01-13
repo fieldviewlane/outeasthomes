@@ -41,10 +41,13 @@ const formSchema = z.object({
     .trim()
     .max(16, { message: "Phone number is too long" })
     .optional(),
+  /*
+  // Commenting out for now to see if a shorter form improves conversion
   message: z.string()
     .trim()
     .optional(),
   periodId: z.enum(periodIds).optional(),
+  */
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -66,18 +69,22 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       name: "",
       email: "",
       phone: "",
-      message: "",
-      periodId: undefined,
+      //Removing message & period as experiment
+      //message: "",
+      //periodId: undefined,
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
 
+    //Removing message & period as experiment
     // Resolve the selected period label from the main property config
+    /*
     const selectedPeriod = PROPERTY_CONFIG.rentPeriods.find(
       (p) => p.id === values.periodId
     );
+    */
 
     try {
       const body = encodeFormData({
@@ -85,9 +92,10 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         name: values.name,
         email: values.email,
         phone: values.phone ?? "",
-        message: values.message ?? "",
-        periodId: values.periodId,
-        periodLabel: selectedPeriod?.label ?? "",
+        //Removing message & period as experiment
+        //message: values.message ?? "",
+        //periodId: values.periodId,
+        //periodLabel: selectedPeriod?.label ?? "",
       });
 
       const response = await fetch("/", {
@@ -128,140 +136,141 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         if (!open) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-[500px] h-auto max-h-[100dvh] sm:max-h-[90vh] top-0 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] p-0 gap-0 overflow-hidden flex flex-col">
-        <DialogHeader className="p-6 pb-2 shrink-0 bg-background z-10 border-b">
-          <DialogTitle className="font-serif text-3xl">Seasonal Rental Inquiry</DialogTitle>
+      <DialogContent className="sm:max-w-[420px] h-auto max-h-dvh sm:max-h-[90vh] top-0 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] p-0 gap-0 overflow-hidden flex flex-col">
+        <DialogHeader className="p-4 pb-3 shrink-0 bg-background z-10 border-b">
+          <DialogTitle className="font-serif text-2xl">Seasonal Rental Inquiry</DialogTitle>
           <DialogDescription>
             Please complete the form below.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-1 overflow-y-auto p-6 pt-2">
+        <div className="flex-1 overflow-y-auto p-6 pt-3 pb-4">
           <Form {...form}>
-            <form id="contact-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Full Name<sup>*</sup></FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input 
-                        placeholder="Alexis Baldwin" 
-                        autoComplete="name"
-                        className={cn("pl-10", fieldState.error && "border-destructive focus-visible:ring-destructive")} 
-                        {...field} 
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Email<sup>*</sup></FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input 
-                        type="email" 
-                        autoComplete="email"
-                        placeholder="alexis@example.com" 
-                        className={cn("pl-10", fieldState.error && "border-destructive focus-visible:ring-destructive")} 
-                        {...field} 
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <Input 
-                        type="tel" 
-                        autoComplete="tel"
-                        placeholder="(212) 555-1212" 
-                        className="pl-10" 
-                        {...field} 
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="periodId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rental Period</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <select
-                        className={cn(
-                          "flex h-10 w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                          field.value === undefined && "text-muted-foreground"
-                        )}
-                        value={field.value ?? ""}
-                        onChange={(event) => field.onChange(event.target.value)}
-                      >
-                        <option value="" disabled>
-                          Click to select rental period of interest
-                        </option>
-                        {PROPERTY_CONFIG.rentPeriods.map((period) => (
-                          <option key={period.id} value={period.id}>
-                            {period.label}
+            <form id="contact-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel className="text-base">Full Name<sup>*</sup></FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                        <Input
+                          placeholder="Alexis Baldwin"
+                          autoComplete="name"
+                          className={cn("pl-10", fieldState.error && "border-destructive focus-visible:ring-destructive")}
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel className="text-base">Email<sup>*</sup></FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                        <Input
+                          type="email"
+                          autoComplete="email"
+                          placeholder="alexis@example.com"
+                          className={cn("pl-10", fieldState.error && "border-destructive focus-visible:ring-destructive")}
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base">Phone Number</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                        <Input
+                          type="tel"
+                          autoComplete="tel"
+                          placeholder="(212) 555-1212"
+                          className="pl-10"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/*Removing message & period as experiment*/}
+              {/*
+              <FormField
+                control={form.control}
+                name="periodId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rental Period</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                        <select
+                          className={cn(
+                            "flex h-10 w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                            field.value === undefined && "text-muted-foreground"
+                          )}
+                          value={field.value ?? ""}
+                          onChange={(event) => field.onChange(event.target.value)}
+                        >
+                          <option value="" disabled>
+                            Click to select rental period of interest
                           </option>
-                        ))}
-                      </select>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                          {PROPERTY_CONFIG.rentPeriods.map((period) => (
+                            <option key={period.id} value={period.id}>
+                              {period.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Message</FormLabel>
-                  <FormControl>
-                      <Textarea
-                      placeholder="Please tell us about yourselves and list any questions you might have"
-                      className="min-h-[50px] sm:min-h-[100px] resize-none"
-                      value={field.value ?? ""}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
-        <br></br>
-        <p className="text-xs text-muted-foreground mb-3 float-right">
-          <sup>*</sup>Required
-        </p>
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Message</FormLabel>
+                    <FormControl>
+                        <Textarea
+                        placeholder="Please tell us about yourselves and list any questions you might have"
+                        className="min-h-[50px] sm:min-h-[100px] resize-none"
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+            /> */}
+            </form>
+          </Form>
+          <p className="text-[10px] text-muted-foreground pt-1 mb-0 float-right">
+            <sup>*</sup>Required
+          </p>
         </div>
-        <div className="p-6 pt-4 border-t bg-background z-10 shrink-0">
+        <div className="p-4 pt-4 border-t bg-background z-10 shrink-0">
           <div className="grid grid-cols-2 gap-3">
             <Button
               type="button"

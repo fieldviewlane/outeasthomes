@@ -31,7 +31,7 @@ stage0_baseline() {
     local SRC="$1" WIDTH="$2"
     local OUT="$OUTPUT_DIR/tmp_baseline_${WIDTH}.avif"
     # Use -thumbnail to strip metadata and speed up baseline
-    magick "$SRC" -resize ${WIDTH}x -quality $MAXQ "$OUT"
+    magick "$SRC" -resize ${WIDTH}x -quality $MAX_QUALITY "$OUT"
     local SIZE=$(du -k "$OUT" | awk '{print $1}')
     # Note: compare returns metric in parentheses, we need to extract it
     local DSSIM=$(magick compare -metric DSSIM "$SRC" "$OUT" null: 2>&1 | awk -F '[()]' '{print $2}')
@@ -48,7 +48,13 @@ stage_avif_search() {
     local PRE_FILE="$6" # This is the preprocessed image path
 
     local LOW=$MINQ HIGH=$MAXQ
-    local BESTQ=$MINQ BESTSIZE=999 BESTDSSIM=1.0 BESTFILE=""
+
+    # Track best candidate under the byte cap (regardless of DSSIM)
+    local BESTQ=-1 BESTSIZE=0 BESTDSSIM=1.0 BESTFILE=""
+
+    # Optionally track best candidate that ALSO satisfies a DSSIM threshold
+    local MAX_DSSIM=$(get_dssim_threshold "$WIDTH")
+    local BESTQ_OK=-1 BESTSIZE_OK=0 BESTDSSIM_OK=1.0 BESTFILE_OK=""
 
     # Get encoding settings from shared config
     local ENC_FLAGS=$(get_encoding_flags "$WIDTH")
@@ -78,17 +84,43 @@ stage_avif_search() {
         log "      [$WIDTH px] Q=$MID → Size=${SIZE}KB | DSSIM=${DSSIM}"
 
         if (( $(echo "$SIZE <= $TARGET_KB" | bc -l) )); then
-            BESTQ=$MID
-            BESTSIZE=$SIZE
-            BESTDSSIM=$DSSIM
-            BESTFILE="$TMP"
+            # Always keep the candidate that uses the most bytes under the cap
+            if [ -z "$BESTFILE" ] || (( $(echo "$SIZE > $BESTSIZE" | bc -l) )); then
+                BESTQ=$MID
+                BESTSIZE=$SIZE
+                BESTDSSIM=$DSSIM
+                BESTFILE="$TMP"
+            fi
+
+            # If a DSSIM threshold is configured (>0), also track the sharpest
+            # candidate that satisfies it.
+            if (( $(echo "$MAX_DSSIM > 0" | bc -l) )) && \
+               (( $(echo "$DSSIM <= $MAX_DSSIM" | bc -l) )); then
+                if [ -z "$BESTFILE_OK" ] || \
+                   (( $(echo "$DSSIM < $BESTDSSIM_OK" | bc -l) )) || \
+                   ( (( $(echo "$DSSIM == $BESTDSSIM_OK" | bc -l) )) && \
+                     (( $(echo "$SIZE > $BESTSIZE_OK" | bc -l) )) ); then
+                    BESTQ_OK=$MID
+                    BESTSIZE_OK=$SIZE
+                    BESTDSSIM_OK=$DSSIM
+                    BESTFILE_OK="$TMP"
+                fi
+            fi
+
             LOW=$((MID+1)) # Try higher quality
         else
             HIGH=$((MID-1)) # Too big, try lower quality
         fi
     done
     rm -f "$RESIZED_REF"
-    echo "$BESTQ $BESTSIZE $BESTDSSIM $BESTFILE"
+
+    # Prefer a candidate that satisfies the DSSIM constraint if one exists,
+    # otherwise fall back to the best size-under-cap candidate.
+    if [ -n "$BESTFILE_OK" ]; then
+        echo "$BESTQ_OK $BESTSIZE_OK $BESTDSSIM_OK $BESTFILE_OK"
+    else
+        echo "$BESTQ $BESTSIZE $BESTDSSIM $BESTFILE"
+    fi
 }
 
 # ----------------------------
@@ -119,12 +151,12 @@ else
     for STEP in "blur" "median"; do
         PRE_IMG="$OUTPUT_DIR/pre_${STEP}_${WIDTH}.png"
         if [ "$STEP" == "blur" ]; then 
-            magick "$SRC" -gravity center -crop 9:16$OFFSET -resize ${WIDTH}x -blur 0x0.5 "$PRE_IMG"
+            magick "$SRC" -gravity center -crop ${CROP_RATIO}$OFFSET -resize ${WIDTH}x -blur 0x0.5 "$PRE_IMG"
         else 
-            magick "$SRC" -gravity center -crop 9:16$OFFSET -resize ${WIDTH}x -statistic Median 3x3 "$PRE_IMG"
+            magick "$SRC" -gravity center -crop ${CROP_RATIO}$OFFSET -resize ${WIDTH}x -statistic Median 3x3 "$PRE_IMG"
         fi
         
-        read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAXQ "S2_$STEP" "$PRE_IMG")
+        read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAX_QUALITY "S2_$STEP" "$PRE_IMG")
         rm -f "$PRE_IMG"
         
         if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )); then
@@ -141,7 +173,7 @@ if [ -z "$FINAL_FILE" ]; then
     for WIDTH in "${RESOLUTIONS[@]}"; do
         [ "$WIDTH" -ge "$WIDTH_GOAL" ] && continue  # Skip widths >= target
         
-        read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAXQ "S1")
+        read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAX_QUALITY "S1")
         
         if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )); then
             FINAL_W=$WIDTH; FINAL_Q=$BQ; FINAL_SIZE=$BS; FINAL_DSSIM=$BD; FINAL_FILE=$BF
@@ -152,12 +184,12 @@ if [ -z "$FINAL_FILE" ]; then
         for STEP in "blur" "median"; do
             PRE_IMG="$OUTPUT_DIR/pre_${STEP}_${WIDTH}.png"
             if [ "$STEP" == "blur" ]; then 
-                magick "$SRC" -gravity center -crop 9:16$OFFSET -resize ${WIDTH}x -blur 0x0.5 "$PRE_IMG"
+                magick "$SRC" -gravity center -crop ${CROP_RATIO}$OFFSET -resize ${WIDTH}x -blur 0x0.5 "$PRE_IMG"
             else 
-                magick "$SRC" -gravity center -crop 9:16$OFFSET -resize ${WIDTH}x -statistic Median 3x3 "$PRE_IMG"
+                magick "$SRC" -gravity center -crop ${CROP_RATIO}$OFFSET -resize ${WIDTH}x -statistic Median 3x3 "$PRE_IMG"
             fi
             
-            read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAXQ "S2_$STEP" "$PRE_IMG")
+            read BQ BS BD BF <<< $(stage_avif_search "$SRC" "$WIDTH" 18 $MAX_QUALITY "S2_$STEP" "$PRE_IMG")
             rm -f "$PRE_IMG"
             
             if [ -n "$BF" ] && (( $(echo "$BS <= $TARGET_KB" | bc -l) )); then

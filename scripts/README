@@ -1,0 +1,144 @@
+Image optimization scripts
+==========================
+
+Overview
+--------
+These scripts discover and generate PageSpeed-friendly AVIF assets for each source
+image, using DSSIM to choose the sharpest image that fits within a per-tier byte cap.
+
+Key scripts
+-----------
+- `encoding-config.sh`
+  Shared configuration for discovery and generation.
+  - `INPUT_DIR` – directory with original images (e.g. `../images/originals`).
+  - `OUTPUT_DIR` – where final AVIFs are written (default `../public/assets`).
+  - `CONFIG_FILE` – JSON written by discovery (default `./image-settings.json`).
+  - Tier caps and widths:
+    - `TARGET_SMALL`, `TARGET_MEDIUM`, `TARGET_LARGE` (in KB).
+    - `WIDTH_SMALL`, `WIDTH_MEDIUM`, `WIDTH_LARGE` (in px).
+  - Search and quality:
+    - `MIN_QUALITY`, `MAX_QUALITY` AVIF quality search bounds.
+  - Layout:
+    - `CROP_RATIO` – aspect ratio passed to ImageMagick `-crop`.
+  - DSSIM thresholds (optional):
+    - `MAX_DSSIM_SMALL`, `MAX_DSSIM_MEDIUM`, `MAX_DSSIM_LARGE`.
+      - DSSIM is a "difference" metric: `0.0` means identical; higher values
+        mean more visible blur/artifacts.
+      - Set all three to `0` to disable DSSIM-based constraints.
+
+- `image-optimize-run.sh`
+  Discovery script – **does not** write final assets.
+  - Scans `INPUT_DIR` for `*.jpg`, `*.jpeg`, `*.png`.
+  - For each image, runs `image-optimize.sh` at three tiers:
+    - Small:  `WIDTH_SMALL` @ `TARGET_SMALL` KB (default 704px @ 100KB).
+    - Medium: `WIDTH_MEDIUM` @ `TARGET_MEDIUM` KB (default 1200px @ 300KB).
+    - Large:  `WIDTH_LARGE` @ `TARGET_LARGE` KB (default 1920px @ 600KB).
+  - Parses the final log line from each run and stores, per image:
+    - `offset` (global crop offset).
+    - `small.w`, `small.q` (width and AVIF quality).
+    - `medium.w`, `medium.q`.
+    - `large.w`, `large.q`.
+  - Output is written to `CONFIG_FILE` (by default `image-settings.json`).
+
+- `image-optimize.sh`
+  Core search engine for a single image + tier.
+  - Inputs
+    - `$1` – source image path.
+    - `$2` – target width in px.
+    - `$3` – target size in KB.
+    - `$4` – ImageMagick crop offset (e.g. `+0+0`, `+0-400`).
+  - Behavior
+    - Resizes/crops the source to the target width/aspect ratio.
+    - Binary-searches AVIF `-q` between `MIN_QUALITY` and `MAX_QUALITY`.
+    - For each candidate:
+      - Encodes with `avifenc` using `get_encoding_flags(width)`.
+      - Measures size (in KB) and DSSIM vs the resized reference.
+    - Always prefers the candidate that uses the most bytes **under** the
+      configured cap.
+    - If DSSIM thresholds are enabled in `encoding-config.sh`, it will, when
+      possible, pick the sharpest candidate that also satisfies the threshold;
+      otherwise it falls back to the best size-under-cap candidate.
+    - Logs a single summary line like:
+      - `🏁 FINAL → 1200px | Q=88 | Size=292KB | DSSIM=0.0054`
+    - `image-optimize-run.sh` parses that line for `w` and `q` only.
+
+- `generate-assets.sh`
+  Final asset generator.
+  - Reads `CONFIG_FILE` (`image-settings.json`) for per-image, per-tier
+    `w`/`q` (and any tier-specific `offset`).
+  - For each image name (all keys, or a subset passed as arguments), it:
+    - Locates the source in `INPUT_DIR`.
+    - For each tier (`small`, `medium`, `large`):
+      - Computes the effective crop offset (tier-specific override or global).
+      - Computes AVIF encoding flags via `get_encoding_flags(w)`.
+      - Crops/resizes with ImageMagick and encodes to AVIF with the discovered
+        `q`.
+      - Writes to `OUTPUT_DIR/<name>-<tier>.avif`.
+
+- `tests/test-single.sh`
+  Small harness for iterating on the optimizer for `kitchen.jpg`.
+  - Uses the same pipeline as `image-optimize-run.sh`, but restricted to a
+    single image.
+  - Writes a minimal `image-settings.json` under `tests/`.
+
+Basic workflow
+--------------
+1. Ensure prerequisites are installed and on `$PATH`:
+   - ImageMagick (`magick` / `compare`).
+   - `avifenc`.
+   - `jq`.
+   - `bc`.
+
+2. From the `scripts` directory, run discovery:
+
+   - All images in `INPUT_DIR`:
+     
+     ```sh
+     ./image-optimize-run.sh
+     ```
+   
+   - Or test a single image interactively:
+     
+     ```sh
+     cd tests
+     ./test-single.sh
+     ```
+
+3. Inspect `image-settings.json` (in `scripts/`) to review the discovered
+   widths, qualities, and any offsets.
+
+4. Generate final AVIF assets:
+
+   - For all discovered images:
+     
+     ```sh
+     cd ..  # back to scripts/
+     ./generate-assets.sh
+     ```
+   
+   - Or only for specific images by key (matching `image-settings.json` keys):
+     
+     ```sh
+     ./generate-assets.sh backyard pool kitchen
+     ```
+
+Notes on DSSIM and caps
+-----------------------
+- The search uses DSSIM to evaluate blurriness vs a resized reference image
+  (same crop and width).
+- The primary goal remains: **use as much of the per-tier byte budget as
+  possible while staying under the configured caps**.
+- Optional DSSIM thresholds (`MAX_DSSIM_*`) can be tuned if you find certain
+  tiers too soft:
+  - Lower threshold ⇒ sharper images, potentially at slightly lower `q` or
+    after pre-processing.
+  - Setting the threshold to `0` for a tier disables the constraint and keeps
+    the old "maximize quality under cap" behavior.
+
+Older Node-based script
+-----------------------
+- `optimize-images.js` and `image-config.json` are from an earlier, purely
+  ImageMagick-based pipeline.
+- The recommended flow is to use `image-optimize-run.sh` + `generate-assets.sh`
+  with `image-settings.json`; keep the Node script around only if you still
+  need its behavior somewhere else.

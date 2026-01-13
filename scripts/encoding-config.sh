@@ -41,6 +41,29 @@ WIDTH_LARGE=1920
 MIN_QUALITY=20
 MAX_QUALITY=95
 
+# DSSIM Thresholds (optional)
+# ---------------------------------------------------------
+# DSSIM is a "difference" metric where 0.0 is identical and higher values
+# mean more visible difference (more blur / artifacts).
+# Set these to 0 to disable DSSIM-based constraints.
+MAX_DSSIM_SMALL=0.08   # e.g. phone portrait
+MAX_DSSIM_MEDIUM=0.06  # e.g. tablet / small laptop
+MAX_DSSIM_LARGE=0.04   # e.g. desktop hero
+
+get_dssim_threshold() {
+    local WIDTH=$1
+
+    # Map width to a tier-specific threshold. This keeps large desktop
+    # images sharper while allowing slightly more error on small screens.
+    if [ "$WIDTH" -ge "$WIDTH_LARGE" ]; then
+        echo "${MAX_DSSIM_LARGE:-0}"
+    elif [ "$WIDTH" -ge "$WIDTH_MEDIUM" ]; then
+        echo "${MAX_DSSIM_MEDIUM:-0}"
+    else
+        echo "${MAX_DSSIM_SMALL:-0}"
+    fi
+}
+
 # Layout
 # ---------------------------------------------------------
 CROP_RATIO="9:16"

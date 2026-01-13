@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Test script - processes only kitchen.jpg
-source "../encoding-config.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../encoding-config.sh"
 
-TEMP_DIR="./tmp_discovery"
+TEMP_DIR="$SCRIPT_DIR/tmp_discovery"
 mkdir -p "$TEMP_DIR"
 
 get_manual_offset() {
@@ -18,7 +19,8 @@ echo "{}" > "$CONFIG_FILE"
 echo "🔍 Testing with kitchen.jpg..." >&2
 echo "" >&2
 
-img="../src/assets/originals/kitchen.jpg"
+IMG_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)/../images/originals"
+img="$IMG_ROOT/kitchen.jpg"
 NAME="kitchen"
 OFFSET=$(get_manual_offset "$NAME")
 
@@ -26,13 +28,13 @@ echo "📸 Processing: $NAME (offset: $OFFSET)" >&2
 
 # Call the engine for three tiers
 echo "   → Small (704px, 100KB)..." >&2
-S_OUT=$(./image-optimize.sh "$img" 704 100 "$OFFSET" 2>&1 | tee /dev/stderr | tail -n 1)
+S_OUT=$(../image-optimize.sh "$img" 704 100 "$OFFSET" 2>&1 | tee /dev/stderr | tail -n 1)
 
 echo "   → Medium (1200px, 300KB)..." >&2
-M_OUT=$(./image-optimize.sh "$img" 1200 300 "$OFFSET" 2>&1 | tee /dev/stderr | tail -n 1)
+M_OUT=$(../image-optimize.sh "$img" 1200 300 "$OFFSET" 2>&1 | tee /dev/stderr | tail -n 1)
 
 echo "   → Large (1920px, 600KB)..." >&2
-L_OUT=$(./image-optimize.sh "$img" 1920 600 "$OFFSET" 2>&1 | tee /dev/stderr | tail -n 1)
+L_OUT=$(../image-optimize.sh "$img" 1920 600 "$OFFSET" 2>&1 | tee /dev/stderr | tail -n 1)
 
 # Parsing FINAL line from image-optimize.sh
 SQ=$(echo "$S_OUT" | grep -oE 'Q=[0-9]+' | cut -d= -f2); : ${SQ:=30}
