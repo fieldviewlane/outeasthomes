@@ -12,42 +12,11 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    {
-      name: "inline-css",
-      apply: "build",
-      enforce: "post",
-      generateBundle(_, bundle) {
-        const cssFile = Object.keys(bundle).find((key) => key.endsWith(".css"));
-        const htmlFile = bundle["index.html"];
-
-        if (cssFile && htmlFile && htmlFile.type === "asset") {
-          const cssPacket = bundle[cssFile];
-          if (cssPacket.type !== "asset") return;
-
-          const cssContent = cssPacket.source;
-          const htmlSource = htmlFile.source as string;
-          
-          // Inject style tag before closing head
-          const newHtml = htmlSource.replace(
-            "</head>",
-            `<style>${cssContent}</style></head>`
-          );
-          
-          // Remove the link tag that Vite added
-          const cssFileName = cssPacket.fileName;
-          // Regex to match the link tag for this specific CSS file
-          // e.g. <link rel="stylesheet" crossorigin href="/assets/index-DqY5sGHw.css">
-          const linkTagRegex = new RegExp(
-            `<link[^>]*?href="[^"]*?${cssFileName}"[^>]*?>`
-          );
-          
-          htmlFile.source = newHtml.replace(linkTagRegex, "");
-          
-          // Remove the CSS file from the bundle so it's not emitted
-          delete bundle[cssFile];
-        }
-      },
-    },
+    // NOTE: The previous "inline-css" plugin has been removed because it
+    // deleted the emitted CSS file Vite expects to preload for dynamic
+    // imports (e.g., the lazy-loaded ContactModal). That caused Safari to
+    // fail preloading `/assets/index-*.css` and reject the dynamic import,
+    // so the modal never appeared.
   ],
   resolve: {
     alias: {

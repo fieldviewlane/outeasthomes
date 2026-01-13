@@ -46,9 +46,11 @@ MAX_QUALITY=95
 # DSSIM is a "difference" metric where 0.0 is identical and higher values
 # mean more visible difference (more blur / artifacts).
 # Set these to 0 to disable DSSIM-based constraints.
-MAX_DSSIM_SMALL=0.08   # e.g. phone portrait
-MAX_DSSIM_MEDIUM=0.06  # e.g. tablet / small laptop
-MAX_DSSIM_LARGE=0.04   # e.g. desktop hero
+# Recommended starting thresholds (tuned for sharpness under current caps):
+# - Small screens tolerate slightly more difference; larger screens should be crisper.
+MAX_DSSIM_SMALL=0.05   # e.g. phone portrait
+MAX_DSSIM_MEDIUM=0.03  # e.g. tablet / small laptop
+MAX_DSSIM_LARGE=0.02   # e.g. desktop hero
 
 get_dssim_threshold() {
     local WIDTH=$1
