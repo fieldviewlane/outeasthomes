@@ -27,7 +27,27 @@ log() { echo "   $*" >&2; }
 echo "🔍 Starting image optimization discovery..." >&2
 echo "" >&2
 
-for img in "$INPUT_DIR"/*.{jpg,jpeg,png}; do
+# Build list of images to process. If image names are passed as arguments,
+# restrict discovery to those basenames; otherwise scan the whole INPUT_DIR
+# for common image extensions.
+IMAGES=()
+if [ "$#" -gt 0 ]; then
+    for KEY in "$@"; do
+        # Try to resolve KEY.{jpg,jpeg,png} in INPUT_DIR
+        MATCH=$(ls "$INPUT_DIR"/"${KEY}".* 2>/dev/null | grep -E '\.(jpe?g|png)$' | head -n 1 || true)
+        if [ -n "$MATCH" ]; then
+            IMAGES+=("$MATCH")
+        else
+            echo "⚠️  No image found for key '$KEY' in $INPUT_DIR" >&2
+        fi
+    done
+else
+    while IFS= read -r -d '' FILE; do
+        IMAGES+=("$FILE")
+    done < <(find "$INPUT_DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) -print0)
+fi
+
+for img in "${IMAGES[@]}"; do
     [ -f "$img" ] || continue
     NAME=$(basename "$img" | sed 's/\.[^.]*$//')
     OFFSET=$(get_manual_offset "$NAME")

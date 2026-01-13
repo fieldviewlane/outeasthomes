@@ -48,7 +48,11 @@ for NAME in ${KEYS[@]}; do
         rm -f "$TEMP_PNG"
         
         if [ -f "$OUT_FILE" ]; then
-            echo "   ✅ $TIER: ${W}px (Q$Q) offset: $OFFSET -> $(du -h "$OUT_FILE" | cut -f1)"
+            # Log actual file size in KB based on byte count (PageSpeed-relevant),
+            # not filesystem allocation blocks.
+            SIZE_BYTES=$(stat -f%z "$OUT_FILE" 2>/dev/null || stat -c%s "$OUT_FILE" 2>/dev/null)
+            SIZE_KB=$(( (SIZE_BYTES + 1023) / 1024 ))
+            echo "   ✅ $TIER: ${W}px (Q$Q) offset: $OFFSET -> ${SIZE_KB}KB (${SIZE_BYTES} bytes)"
         else
             echo "   ❌ $TIER: Failed to generate"
         fi
