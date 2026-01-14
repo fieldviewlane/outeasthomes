@@ -1,11 +1,16 @@
 import { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Lazy load toasters - not needed for FCP/LCP
+const Toaster = lazy(() =>
+  import("@/components/ui/toaster").then((m) => ({ default: m.Toaster }))
+);
+const Sonner = lazy(() =>
+  import("@/components/ui/sonner").then((m) => ({ default: m.Toaster }))
+);
 
 declare global {
   interface Window {
@@ -18,9 +23,11 @@ declare global {
 
 const App = () => {
   return (
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+    <>
+      <Suspense fallback={null}>
+        <Toaster />
+        <Sonner />
+      </Suspense>
       <BrowserRouter basename={import.meta.env.VITE_BASENAME || "/"}>
         <Suspense fallback={<div className="min-h-screen bg-background" />}>
           <Routes>
@@ -30,7 +37,7 @@ const App = () => {
           </Routes>
         </Suspense>
       </BrowserRouter>
-    </TooltipProvider>
+    </>
   );
 };
 

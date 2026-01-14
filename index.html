@@ -1,14 +1,26 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17829976959"></script>
+    <!-- Google tag (gtag.js) - deferred to after LCP -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'AW-17829976959');
+      function loadGTM() {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-17829976959';
+        document.head.appendChild(s);
+        gtag('js', new Date());
+        gtag('config', 'AW-17829976959');
+      }
+
+      // Defer GTM until after LCP to avoid blocking render
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(function() { setTimeout(loadGTM, 100); });
+      } else {
+        setTimeout(loadGTM, 500);
+      }
     </script>
 
     <meta charset="UTF-8" />
