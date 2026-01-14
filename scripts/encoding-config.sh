@@ -68,4 +68,9 @@ get_dssim_threshold() {
 
 # Layout
 # ---------------------------------------------------------
+# Default portrait crop for small/phone.
 CROP_RATIO="9:16"
+# Tier-specific aspect ratios so that each output size is framed correctly.
+CROP_RATIO_SMALL="9:16"   # phone (tall portrait)
+CROP_RATIO_MEDIUM="4:3"   # tablet / laptop
+CROP_RATIO_LARGE="16:9"   # widescreen desktop hero

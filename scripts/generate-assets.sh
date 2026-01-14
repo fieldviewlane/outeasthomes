@@ -35,6 +35,23 @@ for NAME in ${KEYS[@]}; do
         # Use tier-specific offset if defined, otherwise use global offset
         OFFSET="$GLOBAL_OFFSET"
         [ "$TIER_OFFSET" != "null" ] && OFFSET="$TIER_OFFSET"
+
+        # Choose crop ratio per tier (falls back to global CROP_RATIO if tier-specific
+        # values are not set for some reason).
+        case "$TIER" in
+            small)
+                RATIO="${CROP_RATIO_SMALL:-$CROP_RATIO}"
+                ;;
+            medium)
+                RATIO="${CROP_RATIO_MEDIUM:-$CROP_RATIO}"
+                ;;
+            large)
+                RATIO="${CROP_RATIO_LARGE:-$CROP_RATIO}"
+                ;;
+            *)
+                RATIO="$CROP_RATIO"
+                ;;
+        esac
         
         # Determine High-Quality flags based on Tier
         FLAGS=$(get_encoding_flags "$W")
@@ -43,7 +60,7 @@ for NAME in ${KEYS[@]}; do
         TEMP_PNG="/tmp/${NAME}-${TIER}-temp.png"
         
         # Execute: Crop -> Resize -> Save temp PNG -> Encode to AVIF
-        magick "$SRC" -gravity center -crop ${CROP_RATIO}${OFFSET} -resize ${W}x "$TEMP_PNG" && \
+        magick "$SRC" -gravity center -crop ${RATIO}${OFFSET} -resize ${W}x "$TEMP_PNG" && \
         avifenc $FLAGS -q $Q "$TEMP_PNG" "$OUT_FILE" >/dev/null 2>&1
         rm -f "$TEMP_PNG"
         
