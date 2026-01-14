@@ -11,7 +11,7 @@ type CarouselImage = {
 
 const carouselData: CarouselImage[] = [
   { id: "pool", title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
-  { id: "living-room", title: "Spacious Living Room", description: "Double high ceiling fills the room with light" },
+  { id: "living-room", title: "Spacious Living Room", description: "Press the 'Express Interest' button below to get more information" },
   { id: "kitchen", title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
   { id: "backyard", title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
   { id: "bedroom", title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
@@ -19,7 +19,7 @@ const carouselData: CarouselImage[] = [
   { id: "gym", title: "Private Gym", description: "A fully equipped space to keep up your routine" },
   { id: "bed_balcony", title: "Bedroom with Private Balcony", description: "Morning light and fresh air just outside your door" },
   { id: "kitchenette_den", title: "Second living area", description: "A complete second space for family, friends, and nannies" },
-  { id: "bed_corner", title: "Peaceful Corner Bedroom", description: "A spacious corner bedroom with desk" },
+  { id: "bed_corner", title: "Peaceful Corner Bedroom", description: "Press the 'Express Interest' button below to get more information" },
   { id: "front", title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
 ];
 
