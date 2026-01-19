@@ -4,12 +4,12 @@ import { PROPERTY_CONFIG } from "@/config/property";
 const amenities = [
   "Professional Chef’s Kitchen with Premium Appliances",
   "Secluded Grounds Backing to Peaceful Farmland",
-  "Spa-like Primary Bathroom with Rain Shower & Soaking Tub",
   "Private First-Floor Primary Suite",
+  "Spa-like Primary Bathroom with Rain Shower & Soaking Tub",
   "Two-Car Garage with Tesla EV Charging Station",
   "Private Heated Pool and Upper-Level Balcony Deck",
   "Classic Hardwood Floors Throughout",
-  "Private Home Gym featuring Peloton Bike",
+  "Home Gym featuring Peloton Bike",
   "Whole-House Audio System & High-Speed Mesh Wi-Fi",
   "Finished Lower Guest Level with Kitchenette & 85” Cinema Area",
 ];
