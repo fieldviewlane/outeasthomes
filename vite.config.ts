@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import type { OutputBundle, OutputOptions } from "rollup";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,7 +17,7 @@ export default defineConfig({
       name: "inline-css",
       apply: "build",
       enforce: "post",
-      generateBundle(_, bundle) {
+      generateBundle(_: OutputOptions, bundle: OutputBundle) {
         const cssFile = Object.keys(bundle).find((key) => key.endsWith(".css"));
         const htmlFile = bundle["index.html"];
 

@@ -8,7 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "vite build && vite preview",
     "test": "vitest run",
     "deploy": "npm test && vite build && gh-pages -d dist"
   },

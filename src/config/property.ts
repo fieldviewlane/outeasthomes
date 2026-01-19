@@ -26,7 +26,7 @@ const CONTACT_EMAIL_DOMAIN = "outeasthomes.com";
 
 export const PROPERTY_CONFIG: PropertyConfig = {
   address: "Fieldview Lane, East Hampton Village Fringe",
-  headline: "East Hampton Retreat Close to Everything",
+  headline: "Private East Hampton Estate by Peaceful Farmland",
   bedrooms: 6,
   bathrooms: 4.5,
   squareFeet: 4000,

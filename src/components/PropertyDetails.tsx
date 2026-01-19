@@ -2,14 +2,16 @@ import { Home, MapPin, Bed, Bath, Maximize, Clock1, LandPlot } from "lucide-reac
 import { PROPERTY_CONFIG } from "@/config/property";
 
 const amenities = [
-  "Gourmet Kitchen with Premium Appliances",
-  "Beautifully Landscaped, Private Yard Backing to Peaceful Farm",
-  "First-Floor Primary Suite",
-  "Heated Pool and Upper-Level Balcony Deck",
-  "Two-Car Garage with Tesla Charger",
-  "Gym with Peloton Bike",
-  "Hardwood Floors",
-  "Full Guest Level with Kitchenette and 85” TV",
+  "Professional Chef’s Kitchen with Premium Appliances",
+  "Secluded Grounds Backing to Peaceful Farmland",
+  "Spa-like Primary Bathroom with Rain Shower & Soaking Tub",
+  "Private First-Floor Primary Suite",
+  "Two-Car Garage with Tesla EV Charging Station",
+  "Private Heated Pool and Upper-Level Balcony Deck",
+  "Classic Hardwood Floors Throughout",
+  "Private Home Gym featuring Peloton Bike",
+  "Whole-House Audio System & High-Speed Mesh Wi-Fi",
+  "Finished Lower Guest Level with Kitchenette & 85” Cinema Area",
 ];
 
 const formatCurrency = (amount: number) =>
@@ -24,7 +26,7 @@ export const PropertyDetails = () => {
     <main className="bg-background">
       <article className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-20">
         <header className="mb-8 md:mb-12 animate-fade-in">
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-4 md:mb-6">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 md:mb-6">
             {PROPERTY_CONFIG.headline}
           </h1>
           <div className="flex items-center gap-2 text-muted-foreground text-sm sm:text-base md:text-lg mb-6 md:mb-8">
@@ -87,7 +89,7 @@ export const PropertyDetails = () => {
         <section className="mb-12 sm:mb-16 md:mb-20">
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">About Finca Hamptones</h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
-            Welcome to a bright and inviting Hamptons summer home that blends updated living with relaxed beach vibes. Set on a beautifully landscaped acre that backs onto a quiet farm, the property offers rare privacy while remaining just 3 minutes from the heart of East Hampton Village.
+            Welcome to a bright and inviting Hamptons summer home that blends updated living with relaxed beach vibes. Set on a beautifully landscaped acre that backs onto a quiet farm, this East Hampton estate for rent offers rare privacy while remaining just 3 minutes from the heart of East Hampton Village.
           </p>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
             The main level features an open, airy layout ideal for summer living. A renovated gourmet kitchen with premium appliances anchors the space, complemented by a first-floor primary suite designed for ease and convenience. Upstairs, additional guest bedrooms provide plenty of room for the entire family. The lower level serves as its own welcoming guest area, complete with a kitchenette, bedrooms, full bath, and a media den—ideal for visitors or a nanny.
@@ -98,15 +100,18 @@ export const PropertyDetails = () => {
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
             A two-car garage with Tesla charger, home gym with Peloton, hardwood floors, and a whole-house generator add practical luxury to this exceptional seasonal escape.
           </p>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
             A fresh, private, and perfectly located Hamptons home—crafted for effortless summer enjoyment.
+          </p>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-medium text-accent">
+            Now accepting Summer 2026 inquiries.
           </p>
         </section>
 
         <section className="mb-12 sm:mb-16 md:mb-20">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">Direct Rental Rates</h2>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">Summer 2026 Direct Rates</h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-6 sm:mb-8">
-            Rent directly from the owner and enjoy premium amenities at exclusive rates.
+            Inquire directly with the owner for exclusive seasonal pricing and personal assistance.
           </p>
           <div className="w-full md:w-2/3 mx-auto overflow-x-auto rounded-lg border border-border bg-card">
             <table className="w-full text-left">

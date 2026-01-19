@@ -7,20 +7,21 @@ type CarouselImage = {
   id: string;
   title: string;
   description: string;
+  altText?: string;
 };
 
 const carouselData: CarouselImage[] = [
-  { id: "pool", title: "Welcome to Your Summer Home", description: "A place to relax and unwind" },
-  { id: "living-room", title: "Spacious Living Room", description: "Press the 'Express Interest' button below to get more information" },
-  { id: "kitchen", title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks" },
-  { id: "backyard", title: "Private, Expansive Backyard", description: "Landscaping that changes by the month" },
-  { id: "bedroom", title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area" },
-  { id: "bath_primary", title: "Spa-Like Primary Bathroom", description: "A serene space with soaking tub and walk-in shower" },
-  { id: "gym", title: "Private Gym", description: "A fully equipped space to keep up your routine" },
-  { id: "bed_balcony", title: "Bedroom with Private Balcony", description: "Morning light and fresh air just outside your door" },
-  { id: "kitchenette_den", title: "Second living area", description: "A complete second space for family, friends, and nannies" },
-  { id: "bed_corner", title: "Peaceful Corner Bedroom", description: "Press the 'Express Interest' button below to get more information" },
-  { id: "front", title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village" },
+  { id: "pool", title: "Welcome to Your Summer Home", description: "A place to relax and unwind", altText: "Private heated pool at Finca Hamptones East Hampton summer rental" },
+  { id: "living-room", title: "Spacious Living Room", description: "Press the 'Express Interest' button below to get more information", altText: "Spacious luxury living room with classic hardwood floors and natural light" },
+  { id: "kitchen", title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks", altText: "Professional Chef's Kitchen in East Hampton luxury rental with marble countertops" },
+  { id: "backyard", title: "Private, Expansive Backyard", description: "Landscaping that changes by the month", altText: "Secluded grounds at Finca Hamptones backing to peaceful farmland vistas" },
+  { id: "bedroom", title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area", altText: "Private first-floor primary bedroom with direct outdoor lounge access" },
+  { id: "bath_primary", title: "Spa-Like Primary Bathroom", description: "A serene space with soaking tub and walk-in shower", altText: "Spa-like primary bathroom with soaking tub and rainfall shower" },
+  { id: "gym", title: "Private Gym", description: "A fully equipped space to keep up your routine", altText: "Private home gym featuring Peloton bike in East Hampton rental" },
+  { id: "bed_balcony", title: "Bedroom with Private Balcony", description: "Morning light and fresh air just outside your door", altText: "Luxury bedroom with private upper-level balcony deck overlooking the estate" },
+  { id: "kitchenette_den", title: "Second living area", description: "A complete second space for family, friends, and nannies", altText: "Finished lower-level guest room with kitchenette and 85-inch cinema area" },
+  { id: "bed_corner", title: "Peaceful Corner Bedroom", description: "Press the 'Express Interest' button below to get more information", altText: "Peaceful guest bedroom with classic hardwood flooring" },
+  { id: "front", title: "Finca Hamptones", description: "A welcoming home 3 minutes from East Hampton Village", altText: "Finca Hamptones estate exterior located 3 minutes from East Hampton Village" },
 ];
 
 const getInitialIndex = () => {
@@ -64,7 +65,7 @@ export const HorizontalCarousel = () => {
 
     const interval = window.setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % carouselData.length);
-    }, 3000);
+    }, 4000);
 
     return () => window.clearInterval(interval);
   }, [isPaused, currentIndex]);
@@ -159,9 +160,9 @@ export const HorizontalCarousel = () => {
                 <source media="(min-width: 601px)" srcSet={srcMedium} />
                 <img
                   src={srcSmall}
-                  alt={img.title}
+                  alt={img.altText || img.title}
                   loading={index === 0 ? "eager" : "lazy"}
-                  // @ts-ignore
+                  // @ts-expect-error fetchpriority is not yet in React types
                   fetchpriority={index === 0 ? "high" : "auto"}
                   width="600"
                   height="1067"
