@@ -3,13 +3,14 @@ import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import Index from "./Index";
+import { PROPERTY_CONFIG } from "@/config/property";
 
 // Simple IntersectionObserver mock that lets tests control when intersections occur
 
 type ObserverRecord = {
-  callback: (entries: any[], observer: any) => void;
-  instance: { disconnect: ReturnType<typeof vi.fn>; observe: ReturnType<typeof vi.fn> };
-  options: any;
+  callback: IntersectionObserverCallback;
+  instance: IntersectionObserver;
+  options?: IntersectionObserverInit;
 };
 
 const observers: ObserverRecord[] = [];
@@ -18,22 +19,32 @@ beforeEach(() => {
   observers.length = 0;
 
   class MockIntersectionObserver {
-    callback: (entries: any[], observer: any) => void;
+    callback: IntersectionObserverCallback;
     observe: ReturnType<typeof vi.fn>;
     disconnect: ReturnType<typeof vi.fn>;
-    options: any;
+    unobserve: ReturnType<typeof vi.fn>;
+    root: Element | null = null;
+    rootMargin: string = "";
+    thresholds: ReadonlyArray<number> = [];
+    options?: IntersectionObserverInit;
 
-    constructor(callback: (entries: any[], observer: any) => void, options?: any) {
+    constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
       this.callback = callback;
       this.observe = vi.fn();
       this.disconnect = vi.fn();
+      this.unobserve = vi.fn();
       this.options = options;
+      this.rootMargin = options?.rootMargin || "";
 
-      observers.push({ callback, instance: this as any, options });
+      observers.push({ callback, instance: this as unknown as IntersectionObserver, options });
+    }
+
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
     }
   }
 
-  (globalThis as any).IntersectionObserver = MockIntersectionObserver as any;
+  vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
 });
 
 afterEach(() => {
@@ -44,7 +55,15 @@ const triggerIntersection = (index: number, isIntersecting: boolean) => {
   const record = observers[index];
   if (!record) throw new Error(`No IntersectionObserver at index ${index}`);
 
-  const entry = { isIntersecting };
+  const entry = {
+    isIntersecting,
+    boundingClientRect: {} as DOMRectReadOnly,
+    intersectionRatio: isIntersecting ? 1 : 0,
+    intersectionRect: {} as DOMRectReadOnly,
+    rootBounds: null,
+    target: {} as Element,
+    time: Date.now(),
+  };
   record.callback([entry], record.instance);
 };
 
@@ -54,7 +73,7 @@ describe("LazySection", () => {
 
     // PropertyDetails content should not be rendered until intersection occurs
     expect(
-      screen.queryByText(/East Hampton Retreat Close to Everything/i)
+      screen.queryByText(PROPERTY_CONFIG.headline)
     ).not.toBeInTheDocument();
 
     // Ensure the observer is configured to start observing before the element
@@ -69,7 +88,7 @@ describe("LazySection", () => {
     triggerIntersection(0, true);
 
     expect(
-      await screen.findByText(/East Hampton Retreat Close to Everything/i)
+      await screen.findByText(PROPERTY_CONFIG.headline)
     ).toBeInTheDocument();
   });
 
@@ -91,7 +110,7 @@ describe("Index composition", () => {
     triggerIntersection(0, true);
 
     expect(
-      await screen.findByText(/East Hampton Retreat Close to Everything/i)
+      await screen.findByText(PROPERTY_CONFIG.headline)
     ).toBeInTheDocument();
   });
 
