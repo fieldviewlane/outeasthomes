@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import CanonicalLink from "./components/CanonicalLink";
 
 const Index = lazy(() => import("./pages/Index"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -30,6 +31,7 @@ const App = () => {
         <Sonner />
       </Suspense>
       <BrowserRouter basename={import.meta.env.VITE_BASENAME || "/"}>
+        <CanonicalLink />
         <Suspense fallback={<div className="min-h-screen bg-background" />}>
           <Routes>
             <Route path="/" element={<Index />} />
