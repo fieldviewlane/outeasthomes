@@ -35,22 +35,40 @@ const LazySection = ({ children }: { children: React.ReactNode }) => {
   return <div ref={ref}>{isVisible ? children : null}</div>;
 };
 
+const ContactModal = lazy(() =>
+  import("@/components/ContactModal").then((module) => ({ default: module.ContactModal }))
+);
+
 const Index = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasOpened, setHasOpened] = useState(false);
+
+  const handleOpenModal = () => {
+    setHasOpened(true);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen">
       <HorizontalCarousel />
 
       <LazySection>
         <Suspense fallback={null}>
-          <PropertyDetails />
+          <PropertyDetails onOpenModal={handleOpenModal} />
         </Suspense>
       </LazySection>
 
       <LazySection>
         <Suspense fallback={null}>
-          <BottomBar />
+          <BottomBar onOpenModal={handleOpenModal} />
         </Suspense>
       </LazySection>
+
+      {hasOpened && (
+        <Suspense fallback={null}>
+          <ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        </Suspense>
+      )}
     </div>
   );
 };

@@ -1,10 +1,7 @@
-import { useMemo, useState, useEffect, lazy, Suspense } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PROPERTY_CONFIG, type RentPeriodId } from "@/config/property";
-
-// Lazy load the contact modal to reduce initial bundle size
-const ContactModal = lazy(() => import("./ContactModal").then(module => ({ default: module.ContactModal })));
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("en-US", {
@@ -13,9 +10,7 @@ const formatCurrency = (amount: number) =>
     minimumFractionDigits: 0,
   }).format(amount);
 
-export const BottomBar = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [hasOpened, setHasOpened] = useState(false);
+export const BottomBar = ({ onOpenModal }: { onOpenModal: () => void }) => {
   const [selectedPeriodId, setSelectedPeriodId] = useState<RentPeriodId>(PROPERTY_CONFIG.defaultPeriodId);
   const [shouldGlow, setShouldGlow] = useState(false);
 
@@ -50,7 +45,7 @@ export const BottomBar = () => {
   }, [shouldGlow]);
 
 
-  const { selectedPeriod, formattedAmount } = useMemo(() => {
+  const { formattedAmount } = useMemo(() => {
     const periods = PROPERTY_CONFIG.rentPeriods;
     const defaultPeriod = periods[0];
     const current = periods.find((p) => p.id === selectedPeriodId) ?? defaultPeriod;
@@ -79,68 +74,56 @@ export const BottomBar = () => {
     };
   }, []);
 
-  const handleOpenModal = () => {
-    setHasOpened(true);
-    setIsModalOpen(true);
-  };
-
   return (
-    <>
-      <aside className="fixed bottom-0 left-0 right-0 bg-primary/95 backdrop-blur-md border-t border-border z-50">
-        <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 md:px-12 flex items-center justify-center md:justify-between gap-2 sm:gap-4 md:gap-6 h-14 sm:h-16 md:h-20">
-          <div className="hidden md:flex items-center gap-3">
-            <span
-              className="inline-block text-right font-serif text-xl sm:text-2xl md:text-3xl font-bold text-primary-foreground"
-              style={{ width: amountWidth }}
-            >
-              {formattedAmount}
-            </span>
-            <span className="text-sm sm:text-base md:text-lg text-primary-foreground/90">for</span>
-            <Select
-              value={selectedPeriodId}
-              onValueChange={(value: RentPeriodId) => setSelectedPeriodId(value)}
-            >
-              <SelectTrigger
-                className="min-w-[140px] bg-background/20 border-primary-foreground/20 text-primary-foreground text-sm sm:text-base md:text-lg font-medium"
-                style={{ width: periodLabelWidth }}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PROPERTY_CONFIG.rentPeriods.map((period) => (
-                  <SelectItem key={period.id} value={period.id}>
-                    {period.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="hidden md:flex flex-col items-center justify-center flex-1">
-            <div className="text-sm md:text-base font-medium text-primary-foreground">
-              {PROPERTY_CONFIG.bedrooms} Bed
-              <span className="mx-1">|</span>
-              {PROPERTY_CONFIG.bathrooms} Bath
-              <span className="mx-1">|</span>
-              {PROPERTY_CONFIG.squareFeet.toLocaleString()} Sq Ft
-            </div>
-          </div>
-
-          <Button
-            id="open-contact-modal"
-            size="lg"
-            className={`w-3/4 sm:w-1/2 md:w-auto md:shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-sm sm:text-base md:text-lg px-3 sm:px-4 md:px-6 py-1 sm:py-2 md:py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${shouldGlow ? "animate-glow" : ""}`}
-            onClick={handleOpenModal}
+    <aside className="fixed bottom-0 left-0 right-0 bg-primary/95 backdrop-blur-md border-t border-border z-50">
+      <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 md:px-12 flex items-center justify-center md:justify-between gap-2 sm:gap-4 md:gap-6 h-14 sm:h-16 md:h-20">
+        <div className="hidden md:flex items-center gap-3">
+          <span
+            className="inline-block text-right font-serif text-xl sm:text-2xl md:text-3xl font-bold text-primary-foreground"
+            style={{ width: amountWidth }}
           >
-            Express Interest
-          </Button>
+            {formattedAmount}
+          </span>
+          <span className="text-sm sm:text-base md:text-lg text-primary-foreground/90">for</span>
+          <Select
+            value={selectedPeriodId}
+            onValueChange={(value: RentPeriodId) => setSelectedPeriodId(value)}
+          >
+            <SelectTrigger
+              className="min-w-[140px] bg-background/20 border-primary-foreground/20 text-primary-foreground text-sm sm:text-base md:text-lg font-medium"
+              style={{ width: periodLabelWidth }}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PROPERTY_CONFIG.rentPeriods.map((period) => (
+                <SelectItem key={period.id} value={period.id}>
+                  {period.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-      </aside>
-      {hasOpened && (
-        <Suspense fallback={null}>
-          <ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        </Suspense>
-      )}
-    </>
+
+        <div className="hidden md:flex flex-col items-center justify-center flex-1">
+          <div className="text-sm md:text-base font-medium text-primary-foreground">
+            {PROPERTY_CONFIG.bedrooms} Bed
+            <span className="mx-1">|</span>
+            {PROPERTY_CONFIG.bathrooms} Bath
+            <span className="mx-1">|</span>
+            {PROPERTY_CONFIG.squareFeet.toLocaleString()} Sq Ft
+          </div>
+        </div>
+
+        <Button
+          id="open-contact-modal"
+          size="lg"
+          className={`w-3/4 sm:w-1/2 md:w-auto md:shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-sm sm:text-base md:text-lg px-3 sm:px-4 md:px-6 py-1 sm:py-2 md:py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${shouldGlow ? "animate-glow" : ""}`}
+          onClick={onOpenModal}
+        >
+          Express Interest
+        </Button>
+      </div>
+    </aside>
   );
 };

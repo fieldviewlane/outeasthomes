@@ -21,7 +21,7 @@ const formatCurrency = (amount: number) =>
     minimumFractionDigits: 0,
   }).format(amount);
 
-export const PropertyDetails = () => {
+export const PropertyDetails = ({ onOpenModal }: { onOpenModal: () => void }) => {
   return (
     <main className="bg-background">
       <article className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-20">
@@ -129,10 +129,12 @@ export const PropertyDetails = () => {
                 {PROPERTY_CONFIG.rentPeriods.map((period, index) => (
                   <tr
                     key={period.id}
+                    onClick={onOpenModal}
                     className={
-                      index !== PROPERTY_CONFIG.rentPeriods.length - 1
+                      "cursor-pointer hover:bg-muted/50 transition-colors " +
+                      (index !== PROPERTY_CONFIG.rentPeriods.length - 1
                         ? "border-b border-border/60"
-                        : undefined
+                        : "")
                     }
                   >
                     <td className="py-4 px-6 align-top">
