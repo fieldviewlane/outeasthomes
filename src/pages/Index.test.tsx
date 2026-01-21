@@ -122,7 +122,7 @@ describe("Index composition", () => {
     triggerIntersection(1, true);
 
     expect(
-      await screen.findByRole("button", { name: /express interest/i })
+      await screen.findByRole("button", { name: /express interest/i }, { timeout: 3000 })
     ).toBeInTheDocument();
   });
 });

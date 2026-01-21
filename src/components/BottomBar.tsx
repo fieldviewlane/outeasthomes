@@ -127,6 +127,7 @@ export const BottomBar = () => {
           </div>
 
           <Button
+            id="express-interest-button"
             size="lg"
             className={`w-3/4 sm:w-1/2 md:w-auto md:shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-sm sm:text-base md:text-lg px-3 sm:px-4 md:px-6 py-1 sm:py-2 md:py-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${shouldGlow ? "animate-glow" : ""}`}
             onClick={handleOpenModal}
