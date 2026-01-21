@@ -113,12 +113,14 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       });
 
       // Google Ads conversion tracking for Express Interest form submissions
+      /*
       const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
       if (typeof gtag === "function") {
         gtag("event", "conversion", {
           send_to: "AW-17829976959/JtVACMi1gtcbEP-2_7VC",
         });
       }
+      */
     } catch (error) {
       console.error("Failed to submit interest form", error);
       toast.error("Something went wrong while submitting your request.");
@@ -281,6 +283,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
               Cancel
             </Button>
             <Button
+              id="express-interest-button"
               type="submit"
               form="contact-form"
               className="bg-accent hover:bg-accent/90"
