@@ -112,6 +112,8 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
         description: "We've received your details and will be in touch soon.",
       });
 
+      // NOTE: This conversion tracking is currently disabled/commented out.
+      // R&D: This should be removed or replaced with a proper dataLayer event once working.
       // Google Ads conversion tracking for Express Interest form submissions
       /*
       const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;

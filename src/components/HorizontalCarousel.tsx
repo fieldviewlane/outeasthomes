@@ -11,7 +11,7 @@ type CarouselImage = {
 };
 
 const carouselData: CarouselImage[] = [
-  { id: "pool", title: "Welcome to Your Summer Home", description: "A place to relax and unwind", altText: "Private heated pool at Finca Hamptones East Hampton summer rental" },
+  { id: "pool", title: "Welcome to Your Summer Home", description: "A private East Hampton estate by peaceful farmland", altText: "Private East Hampton Estate with heated pool and peaceful farmland views" },
   { id: "living-room", title: "Spacious Living Room", description: "Press the 'Express Interest' button below to get more information", altText: "Spacious luxury living room with classic hardwood floors and natural light" },
   { id: "kitchen", title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks", altText: "Professional Chef's Kitchen in East Hampton luxury rental with marble countertops" },
   { id: "backyard", title: "Private, Expansive Backyard", description: "Landscaping that changes by the month", altText: "Secluded grounds at Finca Hamptones backing to peaceful farmland vistas" },
@@ -141,7 +141,7 @@ export const HorizontalCarousel = () => {
   }, [currentIndex, lastIndexReached]);
 
   return (
-    <section className="relative h-[92dvh] w-full overflow-hidden">
+    <section className="relative h-[85dvh] w-full overflow-hidden">
 
       <div
         className="flex h-full transition-transform duration-700 ease-out"
