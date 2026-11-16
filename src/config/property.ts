@@ -8,6 +8,7 @@ export type RentPeriod = {
 };
 
 export type PropertyConfig = {
+  rentalYear: number;
   address: string;
   headline: string;
   bedrooms: number;
@@ -25,6 +26,7 @@ const CONTACT_EMAIL_USER = "hello";
 const CONTACT_EMAIL_DOMAIN = "outeasthomes.com";
 
 export const PROPERTY_CONFIG: PropertyConfig = {
+  rentalYear: 2027,
   address: "Fieldview Lane, East Hampton Village Fringe",
   headline: "Private East Hampton Estate by Peaceful Farmland",
   bedrooms: 6,

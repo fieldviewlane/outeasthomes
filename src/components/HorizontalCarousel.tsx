@@ -2,17 +2,19 @@ import { useState, useEffect, useRef } from "react";
 import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
 import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
 import { Button } from "@/components/ui/button";
+import { PROPERTY_CONFIG } from "@/config/property";
 
 type CarouselImage = {
   id: string;
   title: string;
   description: string;
   altText?: string;
+  sticker?: string;
 };
 
 const carouselData: CarouselImage[] = [
-  { id: "pool", title: "Welcome to Your Summer Home", description: "A private East Hampton estate by peaceful farmland", altText: "Private East Hampton Estate with heated pool and peaceful farmland views" },
-  { id: "living-room", title: "Spacious Living Room", description: "Press the 'Express Interest' button below to get more information", altText: "Spacious luxury living room with classic hardwood floors and natural light" },
+  { id: "pool", title: "Welcome to Your Summer Home", description: `Now booking for summer ${PROPERTY_CONFIG.rentalYear}`, altText: "Private East Hampton Estate with heated pool and peaceful farmland views" },
+  { id: "living-room", title: "Spacious Living Room", description: "Press the 'Express Interest' button below to get more information", altText: "Spacious luxury living room with classic hardwood floors and natural light", sticker: "New marble fireplace and Frame TV installed. Updated photos coming soon." },
   { id: "kitchen", title: "Gourmet Kitchen", description: "Premium appliances, marble countertops, and room for many cooks", altText: "Professional Chef's Kitchen in East Hampton luxury rental with marble countertops" },
   { id: "backyard", title: "Private, Expansive Backyard", description: "Landscaping that changes by the month", altText: "Secluded grounds at Finca Hamptones backing to peaceful farmland vistas" },
   { id: "bedroom", title: "Primary Suite", description: "Walk-in closet, shower & tub bathroom, direct access to outdoor lounge area", altText: "Private first-floor primary bedroom with direct outdoor lounge access" },
@@ -171,6 +173,13 @@ export const HorizontalCarousel = () => {
                 />
               </picture>
               <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+              {img.sticker && (
+                <div className="absolute top-8 right-6 z-10 w-60 max-w-[calc(100%-3rem)] rotate-3 rounded-lg border-2 border-white/90 bg-accent p-4 text-accent-foreground shadow-xl sm:top-12 sm:right-12 sm:w-72 sm:p-5">
+                  <p className="text-base font-semibold leading-snug sm:text-lg">
+                    {img.sticker}
+                  </p>
+                </div>
+              )}
               <div className="absolute bottom-24 left-8 right-8 md:left-16 md:right-16 max-w-2xl animate-fade-in">
                 <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl font-bold text-primary-foreground mb-2 sm:mb-3 md:mb-4">
                   {img.title}

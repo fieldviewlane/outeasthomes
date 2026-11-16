@@ -2,6 +2,8 @@ import { Home, MapPin, Bed, Bath, Maximize, Clock1, LandPlot } from "lucide-reac
 import { PROPERTY_CONFIG } from "@/config/property";
 
 const amenities = [
+  "New Living Room Marble Fireplace and Frame TV",
+  "New Washer and Dryer",
   "Professional Chef’s Kitchen with Premium Appliances",
   "Secluded Grounds Backing to Peaceful Farmland",
   "Private First-Floor Primary Suite",
@@ -92,7 +94,7 @@ export const PropertyDetails = ({ onOpenModal }: { onOpenModal: () => void }) =>
             Welcome to a bright and inviting Hamptons summer home that blends updated living with relaxed beach vibes. Set on a beautifully landscaped acre that backs onto a quiet farm, this East Hampton estate for rent offers rare privacy while remaining just 3 minutes from the heart of East Hampton Village.
           </p>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
-            The main level features an open, airy layout ideal for summer living. A renovated gourmet kitchen with premium appliances anchors the space, complemented by a first-floor primary suite designed for ease and convenience. Upstairs, additional guest bedrooms provide plenty of room for the entire family. The lower level serves as its own welcoming guest area, complete with a kitchenette, bedrooms, full bath, and a media den—ideal for visitors or a nanny.
+            The main level features an open, airy layout ideal for summer living. The living room now features a newly installed marble fireplace and Frame TV, with updated photos coming soon. A renovated gourmet kitchen with premium appliances anchors the space, complemented by a first-floor primary suite designed for ease and convenience. Upstairs, additional guest bedrooms provide plenty of room for the entire family. The lower level serves as its own welcoming guest area, complete with a kitchenette, bedrooms, full bath, and a media den—ideal for visitors or a nanny.
           </p>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6">
             Outdoors, the expansive backyard is a true highlight: lush plantings, a generous lawn, and a heated, gated pool create a peaceful retreat for long summer days. The adjacent deck offers electronic awnings, a BBQ, outdoor dining and lounge areas, and an outdoor shower—perfect for effortless indoor–outdoor living.
@@ -104,12 +106,12 @@ export const PropertyDetails = ({ onOpenModal }: { onOpenModal: () => void }) =>
             A fresh, private, and perfectly located Hamptons home—crafted for effortless summer enjoyment.
           </p>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-medium text-accent">
-            Now accepting Summer 2026 inquiries.
+            Now accepting Summer {PROPERTY_CONFIG.rentalYear} inquiries.
           </p>
         </section>
 
         <section className="mb-12 sm:mb-16 md:mb-20">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">Summer 2026 Direct Rates</h2>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">Summer {PROPERTY_CONFIG.rentalYear} Direct Rates</h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-6 sm:mb-8">
             Inquire directly with the owner for exclusive seasonal pricing and personal assistance.
           </p>
