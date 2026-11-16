@@ -142,7 +142,7 @@ export const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
     >
       <DialogContent className="sm:max-w-[420px] h-auto max-h-dvh sm:max-h-[90vh] top-0 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] p-0 gap-0 overflow-hidden flex flex-col">
         <DialogHeader className="p-4 pb-3 shrink-0 bg-background z-10 border-b">
-          <DialogTitle className="font-serif text-2xl">Seasonal Rental Inquiry</DialogTitle>
+          <DialogTitle className="font-serif text-2xl">{PROPERTY_CONFIG.rentalYear} Seasonal Rental Inquiry</DialogTitle>
           <DialogDescription>
             Please complete the form below.
           </DialogDescription>
